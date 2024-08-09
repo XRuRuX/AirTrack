@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Neutral colors -->
     <color name="black">#000000</color>
+    <color name="gray">#D3C1C1</color>
     <color name="primary_white">#F0F0F0</color>
     <color name="secondary_white">#B4B4B4</color>
+
+    <!-- Colors -->
+    <color name="red">#EF331F</color>
+    <color name="orange">#EF9E1F</color>
+    <color name="yellow">#EFEF1F</color>
+    <color name="green">#37EF1F</color>
+    <color name="purple">#AD1FEF</color>
 </resources>

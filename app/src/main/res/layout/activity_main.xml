@@ -8,9 +8,10 @@
     tools:context=".MainActivity">
 
     <FrameLayout
+        android:id="@+id/fl_central_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/frame_layout"/>
+        android:background="@color/black"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationMenu"

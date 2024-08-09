@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * AirFragment is designed to display detailed information about air quality.
+ * Additional functionality to provide air quality data will be implemented in the future.
+ */
 public class AirFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
