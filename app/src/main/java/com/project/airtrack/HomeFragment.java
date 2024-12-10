@@ -1,7 +1,11 @@
 package com.project.airtrack;
 
 import com.project.airtrack.bluetooth.BluetoothManager;
+import com.project.airtrack.bluetooth.DataMediator;
+import com.project.airtrack.bluetooth.Mediator;
 import com.project.airtrack.bluetooth.OnDataReceivedListener;
+import com.project.airtrack.data.DataParser;
+import com.project.airtrack.data.DataProcessor;
 
 
 import android.os.Bundle;
@@ -22,12 +26,16 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
 
     private BluetoothManager bluetoothManager;
     private TextView tvIndicatorValue;
+    private Mediator mediator;
+    private DataProcessor processor;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = initializeLayout(inflater, container);
+        processor = new DataParser();
+        mediator = new DataMediator(processor, this);
         setupBluetoothManager();
         setupProgressBar(view);
 
@@ -43,7 +51,7 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
 
     // Configures and initializes BluetoothManager. Connects to the device if Bluetooth is available
     private void setupBluetoothManager() {
-        bluetoothManager = new BluetoothManager(requireContext(), this);
+        bluetoothManager = new BluetoothManager(requireContext(), mediator);
 
         if (!bluetoothManager.isBluetoothAvailable() && tvIndicatorValue != null) {
             tvIndicatorValue.setText("ERR");

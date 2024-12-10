@@ -10,27 +10,31 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
 /**
  * Manages Bluetooth connectivity, including device pairing, connection, and data transfer.
- * Handles interactions with Bluetooth APIs and communicates data to the UI through a listener.
+ * Handles interactions with Bluetooth APIs and communicates data to a Mediator.
  */
 public class BluetoothManager {
+    private static final int PACKET_LENGTH = 10;
+    private Mediator mediator;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothSocket socket;
     private InputStream inputStream;
-    private OnDataReceivedListener dataReceivedListener;
     private boolean isRunning;
     private Context context;
 
-    public BluetoothManager(Context context, OnDataReceivedListener listener) {
+    public BluetoothManager(Context context, Mediator mediator) {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        this.dataReceivedListener = listener;
         this.isRunning = false;
         this.context = context;
+        this.mediator = mediator;
     }
 
     // Checks if Bluetooth is available and enabled on the device
@@ -76,13 +80,11 @@ public class BluetoothManager {
         return null;
     }
 
-    // Logs an error message and notifies the listener about the error
+    // Logs an error message and notifies the mediator about the error
     private void notifyError(String errorMessage) {
         Log.e("BluetoothManager", errorMessage);
 
-        if (dataReceivedListener != null) {
-            dataReceivedListener.onDataReceived("ERR");
-        }
+        mediator.handleData("-1".getBytes());
     }
 
     // Establishes a connection to the specified Bluetooth device
@@ -109,9 +111,7 @@ public class BluetoothManager {
         inputStream = socket.getInputStream();
         isRunning = true;
 
-        if (dataReceivedListener != null) {
-            Log.d("BluetoothManager", "Connected to  " + device.getName());
-        }
+        Log.d("BluetoothManager", "Connected to  " + device.getName());
     }
 
     // Starts a new thread to connect to a device and listen for incoming data
@@ -133,17 +133,38 @@ public class BluetoothManager {
 
     // Continuously reads data from the Bluetooth connection in a loop
     private void listenForData() {
-        byte[] buffer = new byte[512];
-        int bytes;
+        ByteArrayOutputStream packetBuffer = new ByteArrayOutputStream();   // Buffer for building the package
+        int bytesRead;
 
         try {
-            while (isRunning && (bytes = inputStream.read(buffer)) != -1) {
-                String data = new String(buffer, 0, bytes).trim();
-                if (dataReceivedListener != null) {
-                    dataReceivedListener.onDataReceived(data);
+            byte[] buffer = new byte[512]; // Temporary buffer for reading from the stream
+
+            while (isRunning && (bytesRead = inputStream.read(buffer)) != -1) {
+                // Add the read data to the packet buffer
+                packetBuffer.write(buffer, 0, bytesRead);
+
+                // Check if we have enough data for a full packet
+                while (packetBuffer.size() >= PACKET_LENGTH) {
+                    // Extract a complete packet from the buffer
+                    byte[] completePacket = Arrays.copyOfRange(packetBuffer.toByteArray(), 0, PACKET_LENGTH);
+
+                    // Process the complete packet
+                    mediator.handleData(completePacket);
+
+                    // Displays the packet in hexadecimal
+                    StringBuilder hexData = new StringBuilder();
+                    for (byte b : completePacket) {
+                        hexData.append(String.format("%02x ", b));
+                    }
+                    Log.e("BluetoothManager", "Packet in hex: " + hexData.toString().trim());
+
+                    // Remove the processed packet from the buffer
+                    byte[] remainingData = Arrays.copyOfRange(packetBuffer.toByteArray(), PACKET_LENGTH, packetBuffer.size());
+                    packetBuffer.reset();
+                    packetBuffer.write(remainingData);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             notifyError("Data read error: " + e.getMessage());
         }
     }

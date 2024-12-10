@@ -1,0 +1,20 @@
+package com.project.airtrack.data;
+
+/**
+ * The DataParser class processes raw data packets to extract environmental information.
+ */
+public class DataParser implements DataProcessor {
+
+    @Override
+    public EnvironmentalData process(byte[] data) {
+        if(PacketValidator.isValid(data)) {
+            // Extract PM2.5 and PM10 values from the data packet according to documentation
+            int pm25 = (data[4] << 8) | data[5];
+            int pm10 = (data[6] << 8) | data[7];
+
+            return new EnvironmentalData(pm25, pm10);
+        }
+
+        return null;
+    }
+}
