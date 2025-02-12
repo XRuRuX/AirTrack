@@ -84,7 +84,8 @@ public class BluetoothManager {
     private void notifyError(String errorMessage) {
         Log.e("BluetoothManager", errorMessage);
 
-        mediator.handleData("-1".getBytes());
+        byte[] errorByte = new byte[]{(byte) 0xFF}; // Temporary error code
+        mediator.handleData(errorByte);
     }
 
     // Establishes a connection to the specified Bluetooth device

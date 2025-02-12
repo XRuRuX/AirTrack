@@ -2,6 +2,8 @@ package com.project.airtrack;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         replaceFragment(new HomeFragment());
         setupBottomNavigationMenu();
+        setupStatusBar();
     }
 
     // Configures the bottom navigation menu and sets up item selection listener
@@ -49,6 +52,16 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+    // Setup status bar colors
+    private void setupStatusBar() {
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.black));        // Change Android Status Bar color
+        window.getDecorView().setSystemUiVisibility(0);                                      // Change Android Status Bar and Navigation Bar icons to white
+        window.setNavigationBarColor(ContextCompat.getColor(this, R.color.black));   // Change Android Navigation Bar color
     }
 
     // Replaces the current fragment with a new one if they are different

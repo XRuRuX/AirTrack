@@ -7,6 +7,12 @@ import android.util.Log;
  */
 public class PacketValidator {
     public static boolean isValid(byte[] data) {
+        // Temporary for errors
+        if(data[0] == (byte)0xFF)
+        {
+            return false;
+        }
+
         // Check packet start signature
         int packetStart = (data[0] << 8) | data[1];
         if(packetStart != 16695) {  // 41 = 'A' in ASCII and 37 = '7' in ASCII. 0x4137 = 16695 (decimal)

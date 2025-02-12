@@ -2,6 +2,7 @@ package com.project.airtrack.bluetooth;
 
 import com.project.airtrack.data.DataProcessor;
 import com.project.airtrack.data.EnvironmentalData;
+import com.project.airtrack.exceptions.DataParsingException;
 
 /**
  * The DataMediator class acts as a bridge between the data processor and the listener for the UI.
@@ -19,10 +20,13 @@ public class DataMediator implements Mediator {
     // Processes raw data and notifies the listener if valid data is produced
     @Override
     public void handleData(byte[] data) {
-        EnvironmentalData processedData = processor.process(data);
-
-        if(processedData != null) {
+        try {
+            EnvironmentalData processedData = processor.process(data);
             dataReceivedListener.onDataReceived(String.valueOf(processedData.getPm25()));
+        } catch (DataParsingException e)
+        {
+            dataReceivedListener.onDataReceived("ERR");
         }
+
     }
 }

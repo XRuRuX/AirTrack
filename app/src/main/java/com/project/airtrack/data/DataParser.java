@@ -1,12 +1,14 @@
 package com.project.airtrack.data;
 
+import com.project.airtrack.exceptions.DataParsingException;
+
 /**
  * The DataParser class processes raw data packets to extract environmental information.
  */
 public class DataParser implements DataProcessor {
 
     @Override
-    public EnvironmentalData process(byte[] data) {
+    public EnvironmentalData process(byte[] data) throws DataParsingException {
         if(PacketValidator.isValid(data)) {
             // Extract PM2.5 and PM10 values from the data packet according to documentation
             int pm25 = (data[4] << 8) | data[5];
@@ -14,7 +16,8 @@ public class DataParser implements DataProcessor {
 
             return new EnvironmentalData(pm25, pm10);
         }
-
-        return null;
+        else {
+            throw new DataParsingException("Invalid packet received!");
+        }
     }
 }
