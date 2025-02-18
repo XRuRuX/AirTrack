@@ -1,4 +1,4 @@
-package com.project.airtrack.data;
+package com.project.airtrack.data.processing;
 
 import com.project.airtrack.exceptions.DataParsingException;
 

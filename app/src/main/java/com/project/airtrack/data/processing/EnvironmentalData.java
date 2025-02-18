@@ -1,4 +1,4 @@
-package com.project.airtrack.data;
+package com.project.airtrack.data.processing;
 
 /**
  * The EnvironmentalData class stores particulate matter (PM2.5 and PM10) measurements.

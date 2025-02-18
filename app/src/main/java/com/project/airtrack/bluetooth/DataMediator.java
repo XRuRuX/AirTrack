@@ -1,7 +1,7 @@
 package com.project.airtrack.bluetooth;
 
-import com.project.airtrack.data.DataProcessor;
-import com.project.airtrack.data.EnvironmentalData;
+import com.project.airtrack.data.processing.DataProcessor;
+import com.project.airtrack.data.processing.EnvironmentalData;
 import com.project.airtrack.exceptions.DataParsingException;
 
 /**
@@ -25,7 +25,7 @@ public class DataMediator implements Mediator {
             dataReceivedListener.onDataReceived(String.valueOf(processedData.getPm25()));
         } catch (DataParsingException e)
         {
-            dataReceivedListener.onDataReceived("ERR");
+            // Future implementation on error management system
         }
 
     }

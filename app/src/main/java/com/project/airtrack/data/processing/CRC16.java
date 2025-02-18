@@ -1,4 +1,4 @@
-package com.project.airtrack.data;
+package com.project.airtrack.data.processing;
 
 /**
  * The CRC16 class provides a method to calculate the CRC-16 checksum for a given data array.

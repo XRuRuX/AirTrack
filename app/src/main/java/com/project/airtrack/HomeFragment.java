@@ -1,14 +1,19 @@
 package com.project.airtrack;
 
+import com.project.airtrack.application.AirTrackApplication;
 import com.project.airtrack.bluetooth.BluetoothManager;
 import com.project.airtrack.bluetooth.DataMediator;
 import com.project.airtrack.bluetooth.Mediator;
 import com.project.airtrack.bluetooth.OnDataReceivedListener;
-import com.project.airtrack.data.DataParser;
-import com.project.airtrack.data.DataProcessor;
+import com.project.airtrack.data.database.ApplicationDatabase;
+import com.project.airtrack.data.database.dao.SensorDataDAO;
+import com.project.airtrack.data.database.entities.SensorsData;
+import com.project.airtrack.data.processing.DataParser;
+import com.project.airtrack.data.processing.DataProcessor;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import java.util.List;
 
 
 /**
@@ -38,6 +45,7 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         mediator = new DataMediator(processor, this);
         setupBluetoothManager();
         setupProgressBar(view);
+        updateUIWithLastSensorData();
 
         return view;
     }
@@ -54,7 +62,7 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         bluetoothManager = new BluetoothManager(requireContext(), mediator);
 
         if (!bluetoothManager.isBluetoothAvailable() && tvIndicatorValue != null) {
-            tvIndicatorValue.setText("ERR");
+            //tvIndicatorValue.setText("ERR");
             return;
         }
         bluetoothManager.connectToDevice("AirTrack");
@@ -66,6 +74,21 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         if (progressBar != null) {
             progressBar.setProgress(3);
         }
+    }
+
+    // Test database future implementation in managament system
+    private void updateUIWithLastSensorData() {
+        // Test database
+        ApplicationDatabase db = AirTrackApplication.getDatabase();
+        SensorDataDAO sensorDataDAO = db.sensorDataDAO();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SensorsData sensorsData = sensorDataDAO.getLastSensorData();
+                int lastSensorValue = sensorsData.getSensorValue();
+                onDataReceived(Integer.toString(lastSensorValue));
+            }
+        }).start();
     }
 
     @Override
