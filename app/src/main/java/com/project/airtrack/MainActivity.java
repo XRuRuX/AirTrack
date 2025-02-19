@@ -9,7 +9,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -20,15 +19,39 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  * based on user interaction with the bottom navigation menu.
  */
 public class MainActivity extends AppCompatActivity {
+    private Fragment homeFragment;
+    private Fragment temperatureFragment;
+    private Fragment airFragment;
+    private Fragment settingsFragment;
+    private Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        replaceFragment(new HomeFragment());
+
+        initializeFragments();
         setupBottomNavigationMenu();
         setupStatusBar();
+    }
+
+    // Initialize fragments
+    private void initializeFragments() {
+        homeFragment = new HomeFragment();
+        temperatureFragment = new TemperatureFragment();
+        airFragment = new AirFragment();
+        settingsFragment = new SettingsFragment();
+
+        activeFragment = homeFragment;
+
+        // Add fragments to the container and hide the ones that are not active
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fl_central_container, settingsFragment, "settings").hide(settingsFragment)
+                .add(R.id.fl_central_container, airFragment, "air").hide(airFragment)
+                .add(R.id.fl_central_container, temperatureFragment, "temperature").hide(temperatureFragment)
+                .add(R.id.fl_central_container, homeFragment, "home")
+                .commit();
     }
 
     // Configures the bottom navigation menu and sets up item selection listener
@@ -40,13 +63,13 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationMenu.setOnItemSelectedListener(item -> {
             // Replaces the current fragment based on the selected menu item
             if (item.getItemId() == R.id.navigation_home) {
-                replaceFragment(new HomeFragment());
+                switchFragment(homeFragment);
             } else if (item.getItemId() == R.id.navigation_thermometer) {
-                replaceFragment(new TemperatureFragment());
+                switchFragment(temperatureFragment);
             } else if (item.getItemId() == R.id.navigation_air) {
-                replaceFragment(new AirFragment());
+                switchFragment(airFragment);
             } else if (item.getItemId() == R.id.navigation_settings) {
-                replaceFragment(new SettingsFragment());
+                switchFragment(settingsFragment);
             } else {
                 return false;
             }
@@ -64,16 +87,14 @@ public class MainActivity extends AppCompatActivity {
         window.setNavigationBarColor(ContextCompat.getColor(this, R.color.black));   // Change Android Navigation Bar color
     }
 
-    // Replaces the current fragment with a new one if they are different
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fl_central_container);
-
-        // Replace the fragment only if it's different from the current one
-        if (currentFragment == null || !currentFragment.getClass().equals(fragment.getClass())) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fl_central_container, fragment);
-            fragmentTransaction.commit();
+    // Toggles between displayed fragments, hiding the active fragment and showing the selected fragment
+    private void switchFragment(Fragment selectedFragment) {
+        if (selectedFragment != null && selectedFragment != activeFragment) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.hide(activeFragment);
+            transaction.show(selectedFragment);
+            transaction.commit();
+            activeFragment = selectedFragment;
         }
     }
 }
