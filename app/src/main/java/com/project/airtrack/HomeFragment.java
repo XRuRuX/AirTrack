@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
             //tvIndicatorValue.setText("ERR");
             return;
         }
-        bluetoothManager.connectToDevice("AirTrack");
+        bluetoothManager.tryToConnectToDevice("AirTrack");
     }
 
     // Configures the progress bar UI element
@@ -85,8 +85,11 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
             @Override
             public void run() {
                 SensorsData sensorsData = sensorDataDAO.getLastSensorData();
-                int lastSensorValue = sensorsData.getSensorValue();
-                onDataReceived(Integer.toString(lastSensorValue));
+                if(sensorsData != null)
+                {
+                    int lastSensorValue = sensorsData.getSensorValue();
+                    onDataReceived(Integer.toString(lastSensorValue));
+                }
             }
         }).start();
     }

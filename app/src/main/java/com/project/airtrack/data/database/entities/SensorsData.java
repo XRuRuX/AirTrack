@@ -11,14 +11,18 @@ public class SensorsData {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
+    @ColumnInfo(name = "timestamp")
+    public int timestamp;
+
     @ColumnInfo(name = "sensor_id")
     public int sensorId;
 
     @ColumnInfo(name = "sensor_value")
     public int sensorValue;
 
-    public SensorsData(int sensorId, int sensorValue)
+    public SensorsData(int timestamp, int sensorId, int sensorValue)
     {
+        this.timestamp = timestamp;
         this.sensorId = sensorId;
         this.sensorValue = sensorValue;
     }

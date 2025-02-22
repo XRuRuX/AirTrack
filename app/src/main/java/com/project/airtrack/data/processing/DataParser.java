@@ -21,7 +21,7 @@ public class DataParser implements DataProcessor {
             // Temporary
             ApplicationDatabase db = AirTrackApplication.getDatabase();
             SensorDataDAO sensorDataDAO = db.sensorDataDAO();
-            sensorDataDAO.insert(new SensorsData(0, pm25));
+            sensorDataDAO.insert(new SensorsData((int) (System.currentTimeMillis() / 1000), 0, pm25));
 
             return new EnvironmentalData(pm25, pm10);
         }

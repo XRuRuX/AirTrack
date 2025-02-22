@@ -16,11 +16,11 @@ public class AirTrackApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        database = Room.databaseBuilder(getApplicationContext(), ApplicationDatabase.class, "sensors_database").build();
+        // If the database version is different and Room doesn't find a specific migration it will delete the old database
+        database = Room.databaseBuilder(getApplicationContext(), ApplicationDatabase.class, "sensors_database").fallbackToDestructiveMigration().build();
     }
 
     public static ApplicationDatabase getDatabase() {
         return database;
     }
-
 }

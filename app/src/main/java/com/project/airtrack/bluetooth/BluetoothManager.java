@@ -16,6 +16,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Manages Bluetooth connectivity, including device pairing, connection, and data transfer.
@@ -29,6 +32,8 @@ public class BluetoothManager {
     private InputStream inputStream;
     private boolean isRunning;
     private Context context;
+    private ScheduledExecutorService scheduler;
+    private String deviceName;
 
     public BluetoothManager(Context context, Mediator mediator) {
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -89,7 +94,7 @@ public class BluetoothManager {
     }
 
     // Establishes a connection to the specified Bluetooth device
-    private void connectToSocket(BluetoothDevice device) throws Exception {
+    private void connectToSocket(BluetoothDevice device) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             // Checks Bluetooth permissions for Android 12+ (API 31+)
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT)
@@ -106,23 +111,39 @@ public class BluetoothManager {
             }
         }
 
-        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // UUID standard for Bluetooth Classic
-        socket = device.createRfcommSocketToServiceRecord(uuid);
-        socket.connect();
-        inputStream = socket.getInputStream();
-        isRunning = true;
+        // If the connection to the socket succeeds then the scheduler is shutdown
+        try {
+            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // UUID standard for Bluetooth Classic
+            socket = device.createRfcommSocketToServiceRecord(uuid);
+            socket.connect();
+            if((socket != null) && (socket.isConnected()))
+            {
+                scheduler.shutdownNow();
+                inputStream = socket.getInputStream();
+                isRunning = true;
+                Log.d("BluetoothManager", "Connected to: " + device.getName());
+                listenForData();
+            }
+        } catch (IOException e) {
+            Log.e("BluetoothManager", "Error while connecting to device: " + e.getMessage(), e);
+        }
+    }
 
-        Log.d("BluetoothManager", "Connected to  " + device.getName());
+    // Attempts to connect to a specified device by repeatedly calling the connect function every 10 seconds using a scheduler
+    public void tryToConnectToDevice(String deviceName)
+    {
+        this.deviceName = deviceName;
+        scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleWithFixedDelay(() -> connectToDevice(deviceName), 0, 10, TimeUnit.SECONDS);
     }
 
     // Starts a new thread to connect to a device and listen for incoming data
-    public void connectToDevice(String deviceName) {
+    private void connectToDevice(String deviceName) {
         new Thread(() -> {
             try {
                 BluetoothDevice device = findPairedDevice(deviceName);
                 if (device != null) {
                     connectToSocket(device);
-                    listenForData();
                 } else {
                     notifyError("Device not paired: " + deviceName);
                 }
@@ -157,7 +178,7 @@ public class BluetoothManager {
                     for (byte b : completePacket) {
                         hexData.append(String.format("%02x ", b));
                     }
-                    Log.e("BluetoothManager", "Packet in hex: " + hexData.toString().trim());
+                    Log.d("BluetoothManager", "Packet in hex: " + hexData.toString().trim());
 
                     // Remove the processed packet from the buffer
                     byte[] remainingData = Arrays.copyOfRange(packetBuffer.toByteArray(), PACKET_LENGTH, packetBuffer.size());
@@ -166,6 +187,12 @@ public class BluetoothManager {
                 }
             }
         } catch (IOException e) {
+            // If the scheduler is shut down and the device is disconnected, then turn the scheduler on
+            if(scheduler.isShutdown())
+            {
+                tryToConnectToDevice(deviceName);
+                Log.e("BluetoothManager", "Bluetooth device disconnected.");
+            }
             notifyError("Data read error: " + e.getMessage());
         }
     }
