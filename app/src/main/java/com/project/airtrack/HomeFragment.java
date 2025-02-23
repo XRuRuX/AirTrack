@@ -10,6 +10,8 @@ import com.project.airtrack.data.database.dao.SensorDataDAO;
 import com.project.airtrack.data.database.entities.SensorsData;
 import com.project.airtrack.data.processing.DataParser;
 import com.project.airtrack.data.processing.DataProcessor;
+import com.project.airtrack.data.processing.EnvironmentalData;
+import com.project.airtrack.utils.TimeFormatter;
 
 
 import android.os.Bundle;
@@ -24,6 +26,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -33,8 +38,10 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
 
     private BluetoothManager bluetoothManager;
     private TextView tvIndicatorValue;
+    private TextView tvLastUpdated;
     private Mediator mediator;
     private DataProcessor processor;
+    private int lastUpdatedTime;
 
     @Nullable
     @Override
@@ -47,6 +54,10 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         setupProgressBar(view);
         updateUIWithLastSensorData();
 
+        // Setup scheduler to update the UI with the last
+        ScheduledExecutorService lastTimeUpdatedScheduler = Executors.newScheduledThreadPool(1);
+        lastTimeUpdatedScheduler.scheduleWithFixedDelay(this::refreshLastUpdatedTime, 0, 1, TimeUnit.MINUTES);
+
         return view;
     }
 
@@ -54,6 +65,7 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
     private View initializeLayout(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         tvIndicatorValue = view.findViewById(R.id.tv_indicator_value);
+        tvLastUpdated = view.findViewById(R.id.tv_last_updated);
         return view;
     }
 
@@ -76,7 +88,20 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         }
     }
 
-    // Test database future implementation in managament system
+    // Refresh the UI with the last time that the device received data
+    private void refreshLastUpdatedTime(){
+        int currentTimestamp = (int) (System.currentTimeMillis() / 1000);
+        int timePassedSinceLastUpdate = currentTimestamp - lastUpdatedTime;
+
+        // Updating text views only works on the UI Thread
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                tvLastUpdated.setText("Last updated: " + TimeFormatter.secondsToStringFormat(timePassedSinceLastUpdate));
+            });
+        }
+    }
+
+    // Test database future implementation in management system
     private void updateUIWithLastSensorData() {
         // Test database
         ApplicationDatabase db = AirTrackApplication.getDatabase();
@@ -87,20 +112,26 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
                 SensorsData sensorsData = sensorDataDAO.getLastSensorData();
                 if(sensorsData != null)
                 {
-                    int lastSensorValue = sensorsData.getSensorValue();
-                    onDataReceived(Integer.toString(lastSensorValue));
+                    EnvironmentalData lastSensorValue = sensorsData.toEnvironmentalData();
+                    onDataReceived(lastSensorValue);
                 }
             }
         }).start();
     }
 
     @Override
-    public void onDataReceived(String data) {
+    public void onDataReceived(EnvironmentalData data) {
         // Update the UI with data received via Bluetooth
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
                 if (tvIndicatorValue != null) {
-                    tvIndicatorValue.setText(data);
+                    tvIndicatorValue.setText(String.valueOf(data.getPm25()));
+                }
+                if(tvLastUpdated != null) {
+                    int currentTimestamp = (int) (System.currentTimeMillis() / 1000);
+                    lastUpdatedTime = data.getTimestamp();
+                    int timePassedSinceLastUpdate = currentTimestamp - lastUpdatedTime;
+                    tvLastUpdated.setText("Last updated: " + TimeFormatter.secondsToStringFormat(timePassedSinceLastUpdate));
                 }
             });
         }

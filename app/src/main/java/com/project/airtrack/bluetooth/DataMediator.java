@@ -22,7 +22,7 @@ public class DataMediator implements Mediator {
     public void handleData(byte[] data) {
         try {
             EnvironmentalData processedData = processor.process(data);
-            dataReceivedListener.onDataReceived(String.valueOf(processedData.getPm25()));
+            dataReceivedListener.onDataReceived(processedData);
         } catch (DataParsingException e)
         {
             // Future implementation on error management system

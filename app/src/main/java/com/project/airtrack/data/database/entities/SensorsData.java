@@ -1,10 +1,10 @@
 package com.project.airtrack.data.database.entities;
 
-import android.hardware.Sensor;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.project.airtrack.data.processing.EnvironmentalData;
 
 @Entity(tableName = "sensors_data")
 public class SensorsData {
@@ -27,7 +27,8 @@ public class SensorsData {
         this.sensorValue = sensorValue;
     }
 
-    public int getSensorValue() {
-        return sensorValue;
+    public EnvironmentalData toEnvironmentalData()
+    {
+        return new EnvironmentalData(timestamp, sensorValue, sensorId);
     }
 }

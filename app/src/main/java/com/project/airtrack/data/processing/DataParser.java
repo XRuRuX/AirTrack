@@ -19,11 +19,12 @@ public class DataParser implements DataProcessor {
             int pm10 = (data[6] << 8) | data[7];
 
             // Temporary
+            int timestamp = (int) (System.currentTimeMillis() / 1000);
             ApplicationDatabase db = AirTrackApplication.getDatabase();
             SensorDataDAO sensorDataDAO = db.sensorDataDAO();
-            sensorDataDAO.insert(new SensorsData((int) (System.currentTimeMillis() / 1000), 0, pm25));
+            sensorDataDAO.insert(new SensorsData(timestamp, 0, pm25));
 
-            return new EnvironmentalData(pm25, pm10);
+            return new EnvironmentalData(timestamp, pm25, pm10);
         }
         else {
             throw new DataParsingException("Invalid packet received!");
