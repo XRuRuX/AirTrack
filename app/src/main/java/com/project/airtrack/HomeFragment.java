@@ -112,8 +112,8 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
                 SensorsData sensorsData = sensorDataDAO.getLastSensorData();
                 if(sensorsData != null)
                 {
-                    EnvironmentalData lastSensorValue = sensorsData.toEnvironmentalData();
-                    onDataReceived(lastSensorValue);
+                    EnvironmentalData lastAQIValue = sensorsData.toEnvironmentalData();
+                    onDataReceived(lastAQIValue);
                 }
             }
         }).start();
@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
                 if (tvIndicatorValue != null) {
-                    tvIndicatorValue.setText(String.valueOf(data.getPm25()));
+                    tvIndicatorValue.setText(String.valueOf(data.getMaximumAQI()));
                 }
                 if(tvLastUpdated != null) {
                     int currentTimestamp = (int) (System.currentTimeMillis() / 1000);

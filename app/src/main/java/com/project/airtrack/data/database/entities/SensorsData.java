@@ -17,18 +17,26 @@ public class SensorsData {
     @ColumnInfo(name = "sensor_id")
     public int sensorId;
 
-    @ColumnInfo(name = "sensor_value")
-    public int sensorValue;
+    @ColumnInfo(name = "pm25_AQI")
+    public int pm25AQI;
 
-    public SensorsData(int timestamp, int sensorId, int sensorValue)
+    @ColumnInfo(name = "pm10_AQI")
+    public int pm10AQI;
+
+    @ColumnInfo(name = "max_AQI")
+    public int maximumAQI;
+
+    public SensorsData(int timestamp, int sensorId, int pm25AQI, int pm10AQI, int maximumAQI)
     {
         this.timestamp = timestamp;
         this.sensorId = sensorId;
-        this.sensorValue = sensorValue;
+        this.pm25AQI = pm25AQI;
+        this.pm10AQI = pm10AQI;
+        this.maximumAQI = maximumAQI;
     }
 
     public EnvironmentalData toEnvironmentalData()
     {
-        return new EnvironmentalData(timestamp, sensorValue, sensorId);
+        return new EnvironmentalData(timestamp, pm25AQI, pm10AQI, maximumAQI);
     }
 }
