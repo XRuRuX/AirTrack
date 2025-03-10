@@ -9,12 +9,14 @@ import com.project.airtrack.exceptions.DataParsingException;
  */
 public class DataMediator implements Mediator {
     private DataProcessor processor;
-    private OnDataReceivedListener dataReceivedListener;
+    private OnDataReceivedListener homeDataReceivedListener;
+    private OnDataReceivedListener temperatureDataReceivedListener;
 
-    public DataMediator(DataProcessor processor, OnDataReceivedListener listener)
+    public DataMediator(DataProcessor processor, OnDataReceivedListener homeListener, OnDataReceivedListener temperatureListener)
     {
         this.processor = processor;
-        this.dataReceivedListener = listener;
+        this.homeDataReceivedListener = homeListener;
+        this.temperatureDataReceivedListener = temperatureListener;
     }
 
     // Processes raw data and notifies the listener if valid data is produced
@@ -22,7 +24,9 @@ public class DataMediator implements Mediator {
     public void handleData(byte[] data) {
         try {
             EnvironmentalData processedData = processor.process(data);
-            dataReceivedListener.onDataReceived(processedData);
+            // Send data to all fragment listeners
+            homeDataReceivedListener.onDataReceived(processedData);
+            temperatureDataReceivedListener.onDataReceived(processedData);
         } catch (DataParsingException e)
         {
             // Future implementation on error management system

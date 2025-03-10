@@ -43,4 +43,21 @@ public class ConcentrationToAQIUnitTest {
     public void testConcentrationToAQIpm10(int pm10, int expected) {
         assertEquals(expected, ConcentrationToAQI.pm10(pm10));
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "-22, 0",
+            "0, 0",
+            "23, 21",
+            "66, 88",
+            "84, 147",
+            "87, 156",
+            "156, 254",
+            "323, 260",
+            "700, 447",
+            "1234, 713"
+    })
+    public void testConcentrationToAQIozone(int ozone, int expected) {
+        assertEquals(expected, ConcentrationToAQI.ozone(ozone));
+    }
 }

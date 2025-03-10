@@ -17,39 +17,38 @@ public class DataParser implements DataProcessor {
     @Override
     public EnvironmentalData process(byte[] data) throws DataParsingException {
         if(PacketValidator.isValid(data)) {
-            // Extract Sensor ID according to documentation
-            int sensorID = data[2];
-            Log.i("ExtractData", "Sensor ID: " + sensorID);
+            // Extract PM2.5 and PM10 values from the data packet according to documentation
+            int pm25 = (data[4] << 8) | data[5];
+            int pm10 = (data[6] << 8) | data[7];
+            // Extract ozone concentration (ppb) from the data packet according to documentation
+            float ozone = data[9] + (float) data[10] / 10;
+            // Extract temperature and humidity from the data packet according to documentation
+            float temperature = data[10] + (float) data[11] / 10;
+            float humidity = data[12] + (float) data[13] / 10;
+            // Calculate AQI based on the pollutant values
+            int pm25AQI = ConcentrationToAQI.pm25(pm25);
+            int pm10AQI = ConcentrationToAQI.pm10(pm10);
+            int ozoneAQI = ConcentrationToAQI.ozone(ozone);
+            Log.i("AQI", "PM2.5 concentration: " + pm25 + " / AQI: " + pm25AQI);
+            Log.i("AQI", "PM10 concentration: " + pm10 + " / AQI: " + pm10AQI);
+            Log.i("AQI", "Ozone concentration in ppb: " + ozone + " / AQI: " + ozoneAQI);
+            Log.i("DHT22", "Temperature: " + temperature + " / Humidity: " + humidity);
 
-            // Check if the data is coming from the PMS5003 sensor
-            if(sensorID == 1) {
-                // Extract PM2.5 and PM10 values from the data packet according to documentation
-                int pm25 = (data[4] << 8) | data[5];
-                int pm10 = (data[6] << 8) | data[7];
-                // Calculate AQI based on the pollutant values
-                int pm25AQI = ConcentrationToAQI.pm25(pm25);
-                int pm10AQI = ConcentrationToAQI.pm10(pm10);
-                Log.i("AQI", "PM2.5 concentration: " + pm25 + " / AQI: " + pm25AQI);
-                Log.i("AQI", "PM10 concentration: " + pm10 + " / AQI: " + pm10AQI);
+            // Temporary
+            int timestamp = (int) (System.currentTimeMillis() / 1000);
+            ApplicationDatabase db = AirTrackApplication.getDatabase();
+            SensorDataDAO sensorDataDAO = db.sensorDataDAO();
+            int maximumAQI = selectMaximumAQI(pm25AQI, pm10AQI, ozoneAQI);
+            sensorDataDAO.insert(new SensorsData(timestamp, pm25AQI, pm10AQI, ozoneAQI, maximumAQI, temperature, humidity));
 
-                // Temporary
-                int timestamp = (int) (System.currentTimeMillis() / 1000);
-                ApplicationDatabase db = AirTrackApplication.getDatabase();
-                SensorDataDAO sensorDataDAO = db.sensorDataDAO();
-                int maximumAQI = selectMaximumAQI(pm25AQI, pm10AQI);
-                sensorDataDAO.insert(new SensorsData(timestamp, sensorID, pm25AQI, pm10AQI, maximumAQI));
-
-                return new EnvironmentalData(timestamp, pm25AQI, pm10AQI, maximumAQI);
-            }
-
-            return null;
+            return new EnvironmentalData(timestamp, pm25AQI, pm10AQI, ozoneAQI, maximumAQI, temperature, humidity);
         }
         else {
             throw new DataParsingException("Invalid packet received!");
         }
     }
 
-    private int selectMaximumAQI(int pm25, int pm10) {
-        return Math.max(pm25, pm10);
+    private int selectMaximumAQI(int pm25, int pm10, int ozone) {
+        return Math.max(Math.max(pm25, pm10), ozone);
     }
 }

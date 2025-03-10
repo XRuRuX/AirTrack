@@ -12,6 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.project.airtrack.bluetooth.BluetoothManager;
+import com.project.airtrack.bluetooth.DataMediator;
+import com.project.airtrack.bluetooth.Mediator;
+import com.project.airtrack.bluetooth.OnDataReceivedListener;
+import com.project.airtrack.data.processing.DataParser;
+import com.project.airtrack.data.processing.DataProcessor;
 
 /**
  * MainActivity is the entry point of the app, handling the main user interface and navigation.
@@ -24,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private Fragment airFragment;
     private Fragment settingsFragment;
     private Fragment activeFragment;
+    private Mediator mediator;
+    private DataProcessor processor;
+    private BluetoothManager bluetoothManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +61,16 @@ public class MainActivity extends AppCompatActivity {
                 .add(R.id.fl_central_container, temperatureFragment, "temperature").hide(temperatureFragment)
                 .add(R.id.fl_central_container, homeFragment, "home")
                 .commit();
+
+        processor = new DataParser();
+        mediator = new DataMediator(processor, (OnDataReceivedListener) homeFragment, (OnDataReceivedListener) temperatureFragment);
+        setupBluetoothManager();
+    }
+
+    // Configures and initializes BluetoothManager. Connects to the device if Bluetooth is available
+    private void setupBluetoothManager() {
+        bluetoothManager = new BluetoothManager(this, mediator);
+        bluetoothManager.tryToConnectToDevice("AirTrack");
     }
 
     // Configures the bottom navigation menu and sets up item selection listener

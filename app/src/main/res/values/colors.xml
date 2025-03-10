@@ -5,6 +5,7 @@
     <color name="gray">#D3C1C1</color>
     <color name="primary_white">#F0F0F0</color>
     <color name="secondary_white">#B4B4B4</color>
+    <color name="gray_white">#C8C8C8</color>
 
     <!-- Colors -->
     <color name="red">#EF331F</color>

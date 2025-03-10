@@ -48,6 +48,30 @@ public class ConcentrationToAQI {
         }
     }
 
+    // Official documentation refers to ppm to calculate AQI, but we receive ppb, so we multiply the threshold by 1000
+    public static int ozone(float ozone) {
+        if(ozone < 0) {
+            return 0;
+        } else if (ozone <= 54.0) {
+            return calculateAQI(ozone, 0.0, 54.0, 0, 50);
+        } else if (ozone >= 54.1 && ozone <= 70.0) {
+            return calculateAQI(ozone, 54.1, 70.0, 51, 100);
+        } else if (ozone >= 70.1 && ozone <= 85.0) {
+            return calculateAQI(ozone, 70.1, 85.0, 101, 150);
+        } else if (ozone >= 85.1 && ozone <= 105.0) {
+            return calculateAQI(ozone, 85.1, 105.0, 151, 200);
+        } else if (ozone >= 105.1 && ozone <= 200.0) {
+            return calculateAQI(ozone, 105.1, 200.0, 201, 300);
+        } else if (ozone >= 200.1 && ozone <= 404.0) {
+            return calculateAQI(ozone, 200.1, 404.0, 301, 500);
+        } else if (ozone >= 404.1 && ozone <= 1000) {
+            return calculateAQI(ozone, 404.1, 1000, 501, 900);
+        }
+        else {
+            return 999;
+        }
+    }
+
     private static int calculateAQI(double concentration, double cLow, double cHigh, int aqiLow, int aqiHigh) {
         double aqi = ((aqiHigh - aqiLow) / (cHigh - cLow)) * (concentration - cLow) + aqiLow;
         return Math.round((float) aqi);

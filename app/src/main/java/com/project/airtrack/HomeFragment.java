@@ -36,11 +36,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class HomeFragment extends Fragment implements OnDataReceivedListener {
 
-    private BluetoothManager bluetoothManager;
     private TextView tvIndicatorValue;
     private TextView tvLastUpdated;
-    private Mediator mediator;
-    private DataProcessor processor;
     private int lastUpdatedTime;
 
     @Nullable
@@ -48,9 +45,6 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = initializeLayout(inflater, container);
-        processor = new DataParser();
-        mediator = new DataMediator(processor, this);
-        setupBluetoothManager();
         setupProgressBar(view);
         updateUIWithLastSensorData();
 
@@ -67,17 +61,6 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         tvIndicatorValue = view.findViewById(R.id.tv_indicator_value);
         tvLastUpdated = view.findViewById(R.id.tv_last_updated);
         return view;
-    }
-
-    // Configures and initializes BluetoothManager. Connects to the device if Bluetooth is available
-    private void setupBluetoothManager() {
-        bluetoothManager = new BluetoothManager(requireContext(), mediator);
-
-        if (!bluetoothManager.isBluetoothAvailable() && tvIndicatorValue != null) {
-            //tvIndicatorValue.setText("ERR");
-            return;
-        }
-        bluetoothManager.tryToConnectToDevice("AirTrack");
     }
 
     // Configures the progress bar UI element
@@ -140,9 +123,5 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Disconnect BluetoothManager when the fragment is destroyed
-        if (bluetoothManager != null) {
-            bluetoothManager.disconnect();
-        }
     }
 }
