@@ -1,21 +1,16 @@
 package com.project.airtrack;
 
 import com.project.airtrack.application.AirTrackApplication;
-import com.project.airtrack.bluetooth.BluetoothManager;
-import com.project.airtrack.bluetooth.DataMediator;
-import com.project.airtrack.bluetooth.Mediator;
 import com.project.airtrack.bluetooth.OnDataReceivedListener;
 import com.project.airtrack.data.database.ApplicationDatabase;
 import com.project.airtrack.data.database.dao.SensorDataDAO;
 import com.project.airtrack.data.database.entities.SensorsData;
-import com.project.airtrack.data.processing.DataParser;
-import com.project.airtrack.data.processing.DataProcessor;
 import com.project.airtrack.data.processing.EnvironmentalData;
+import com.project.airtrack.utils.AQIFormatter;
 import com.project.airtrack.utils.TimeFormatter;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -38,14 +32,17 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
 
     private TextView tvIndicatorValue;
     private TextView tvLastUpdated;
+    private TextView tvIndicatorText;
+    private TextView tvPollutant;
     private int lastUpdatedTime;
+    CircularSegmentedProgressBar progressBar;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = initializeLayout(inflater, container);
-        setupProgressBar(view);
+        progressBar = view.findViewById(R.id.progressBar);
         updateUIWithLastSensorData();
 
         // Setup scheduler to update the UI with the last
@@ -60,15 +57,9 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         tvIndicatorValue = view.findViewById(R.id.tv_indicator_value);
         tvLastUpdated = view.findViewById(R.id.tv_last_updated);
+        tvIndicatorText = view.findViewById(R.id.tv_indicator_text);
+        tvPollutant = view.findViewById(R.id.tv_pollutant);
         return view;
-    }
-
-    // Configures the progress bar UI element
-    private void setupProgressBar(View view) {
-        CircularSegmentedProgressBar progressBar = view.findViewById(R.id.progressBar);
-        if (progressBar != null) {
-            progressBar.setProgress(3);
-        }
     }
 
     // Refresh the UI with the last time that the device received data
@@ -97,6 +88,11 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
                 {
                     EnvironmentalData lastAQIValue = sensorsData.toEnvironmentalData();
                     onDataReceived(lastAQIValue);
+                    int maximumAQI = lastAQIValue.getMaximumAQI();
+                    progressBar.setProgress(AQIFormatter.toProgress(maximumAQI));
+                    tvIndicatorText.setText(AQIFormatter.toString(maximumAQI));
+                    String pollutant = AQIFormatter.getPollutantWithHighestAQI(lastAQIValue);
+                    tvPollutant.setText(pollutant);
                 }
             }
         }).start();
@@ -108,7 +104,12 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
                 if (tvIndicatorValue != null) {
-                    tvIndicatorValue.setText(String.valueOf(data.getMaximumAQI()));
+                    int maximumAQI = data.getMaximumAQI();
+                    tvIndicatorValue.setText(String.valueOf(maximumAQI));
+                    progressBar.setProgress(AQIFormatter.toProgress(maximumAQI));
+                    tvIndicatorText.setText(AQIFormatter.toString(maximumAQI));
+                    String pollutant = AQIFormatter.getPollutantWithHighestAQI(data);
+                    tvPollutant.setText(pollutant);
                 }
                 if(tvLastUpdated != null) {
                     int currentTimestamp = (int) (System.currentTimeMillis() / 1000);

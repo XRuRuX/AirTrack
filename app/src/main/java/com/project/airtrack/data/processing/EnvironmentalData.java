@@ -41,6 +41,10 @@ public class EnvironmentalData {
         this.pm10AQI = pm10AQI;
     }
 
+    public int getOzoneAQI() {
+        return ozoneAQI;
+    }
+
     public int getMaximumAQI() { return maximumAQI; }
 
     public float getTemperature() { return temperature; }

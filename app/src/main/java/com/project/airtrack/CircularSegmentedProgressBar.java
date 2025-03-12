@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat;
  */
 public class CircularSegmentedProgressBar extends View {
 
-    private final int segments = 8;
+    private final int segments = 9;
     private int progress = 3;
     private final int segmentsNotDrawn = 3;
     private int[] segmentColorsInactive;
@@ -64,7 +64,8 @@ public class CircularSegmentedProgressBar extends View {
                 ContextCompat.getColor(getContext(), R.color.yellow),
                 ContextCompat.getColor(getContext(), R.color.orange),
                 ContextCompat.getColor(getContext(), R.color.red),
-                ContextCompat.getColor(getContext(), R.color.purple)
+                ContextCompat.getColor(getContext(), R.color.purple),
+                ContextCompat.getColor(getContext(), R.color.brown)
         };
 
         rectF = new RectF();
@@ -81,7 +82,7 @@ public class CircularSegmentedProgressBar extends View {
         super.onDraw(canvas);
 
         // The initial starting angle for the first segment. It draws the segment counterclockwise
-        float startAngle = 160f;
+        float startAngle = 150f;
         // Calculate the angle each segment will cover
         float sweepAngle = (360f - (segments * gapAngle)) / segments;
 

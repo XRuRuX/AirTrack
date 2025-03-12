@@ -58,28 +58,28 @@
             android:paddingTop="20dp"
             android:text="55"
             android:textColor="@color/primary_white"
-            android:textSize="120sp" />
+            android:textSize="116sp" />
 
         <TextView
             android:id="@+id/tv_indicator_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|center_horizontal"
-            android:paddingTop="20dp"
+            android:paddingTop="40dp"
             android:text="MODERATE"
             android:textColor="@color/primary_white"
-            android:textSize="36sp" />
+            android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/tv_air"
+            android:id="@+id/tv_pollutant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|center_horizontal"
             android:layout_marginTop="34dp"
-            android:paddingTop="20dp"
+            android:paddingTop="30dp"
             android:text="AIR QUALITY"
             android:textColor="@color/secondary_white"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
     </FrameLayout>
 
     <TextView
