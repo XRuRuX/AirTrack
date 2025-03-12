@@ -18,13 +18,13 @@ public class DataParser implements DataProcessor {
     public EnvironmentalData process(byte[] data) throws DataParsingException {
         if(PacketValidator.isValid(data)) {
             // Extract PM2.5 and PM10 values from the data packet according to documentation
-            int pm25 = (data[4] << 8) | data[5];
-            int pm10 = (data[6] << 8) | data[7];
+            int pm25 = ((data[4] & 0xFF) << 8) | (data[5] & 0xFF);  // Remove the sign
+            int pm10 = ((data[6] & 0xFF) << 8) | (data[7] & 0xFF);  // Remove the sign
             // Extract ozone concentration (ppb) from the data packet according to documentation
-            float ozone = data[9] + (float) data[10] / 10;
+            float ozone = (data[8] & 0xFF) + (float)(data[9] & 0xFF) / 10;  // Remove the sign
             // Extract temperature and humidity from the data packet according to documentation
-            float temperature = data[10] + (float) data[11] / 10;
-            float humidity = data[12] + (float) data[13] / 10;
+            float temperature = (data[10] & 0xFF) + (float)(data[11] & 0xFF) / 10;  // Remove the sign
+            float humidity = (data[12] & 0xFF) + (float)(data[13] & 0xFF) / 10;  // Remove the sign
             // Calculate AQI based on the pollutant values
             int pm25AQI = ConcentrationToAQI.pm25(pm25);
             int pm10AQI = ConcentrationToAQI.pm10(pm10);

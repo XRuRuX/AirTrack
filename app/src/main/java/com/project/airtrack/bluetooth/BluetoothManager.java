@@ -167,6 +167,19 @@ public class BluetoothManager {
 
                 // Check if we have enough data for a full packet
                 while (packetBuffer.size() >= PACKET_LENGTH) {
+                    byte[] data = packetBuffer.toByteArray();
+
+                    // Check packet start signature (first two bytes are always 16695)
+                    int packetStart = ((data[0] & 0xFF) << 8) | (data[1] & 0xFF);
+                    if(packetStart != 16695) {  // 41 = 'A' in ASCII and 37 = '7' in ASCII. 0x4137 = 16695 (decimal)
+                        Log.e("PacketValidator", "Wrong packet signature. Expected: 16695. Actual: " + packetStart);
+                        // Discard the first byte and try again
+                        byte[] remainingData = Arrays.copyOfRange(data, 1, data.length);
+                        packetBuffer.reset();
+                        packetBuffer.write(remainingData);
+                        continue;
+                    }
+
                     // Extract a complete packet from the buffer
                     byte[] completePacket = Arrays.copyOfRange(packetBuffer.toByteArray(), 0, PACKET_LENGTH);
 
