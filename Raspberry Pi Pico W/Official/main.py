@@ -20,12 +20,13 @@ while True:
     if ((uart_pms5003.any() > 0) and (dht22 != None) and (mq131 != None)):
         data = uart_pms5003.read(32)  # Read 32 bytes (standard packet size of PMS5003)
         resultPMS5003 = PMS5003.get_data(data)
-        time.sleep_ms(100)
+        time.sleep_ms(1000)
 
         print(f"PM2.5: {resultPMS5003['PM2.5']} ug/m3")
         print(f"PM10: {resultPMS5003['PM10']} ug/m3")
 
         dht_data = dht22.get_data()
+        #dht_data = {"Temperature": 22.3, "Humidity": 57.23}
         if dht_data:
             print(f"Temperature: {dht_data['Temperature']} °C")
             print(f"Humidity: {dht_data['Humidity']} %")
