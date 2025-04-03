@@ -12,7 +12,7 @@ def crc16_ccitt(data, poly=0x1021, init_crc=0x0000):
 
 class PacketBuilder:
     @staticmethod
-    def encode(start, id, length, pm25, pm10, ozone, temperature, humidity):
+    def encode(start, id, length, pm25, pm10, ozone, co, no2, temperature, humidity):
         temp = bytearray()
         temp += start.encode('utf-8') # Add start signature as UTF-8 bytes
         temp.append(id & 0xFF)  # Add packet ID
@@ -23,6 +23,14 @@ class PacketBuilder:
         ozone_decimal = int((ozone - ozone_int) * 10) # Decimal part
         temp += ozone_int.to_bytes(1, 'big')
         temp += ozone_decimal.to_bytes(1, 'big')
+        co_int = int(co) # Only the integer part
+        co_decimal = int((co - co_int) * 10) # Decimal part
+        temp += co_int.to_bytes(2, 'big')
+        temp += co_decimal.to_bytes(1, 'big')
+        no2_int = int(no2) # Only the integer part
+        no2_decimal = int((no2 - no2_int) * 10) # Decimal part
+        temp += no2_int.to_bytes(1, 'big')
+        temp += no2_decimal.to_bytes(1, 'big')
         temperature_int = int(temperature) # Only the integer part
         temperature_decimal = int((temperature - temperature_int) * 10) # Decimal part
         temp += temperature_int.to_bytes(1, 'big')
