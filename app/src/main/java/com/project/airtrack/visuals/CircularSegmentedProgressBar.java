@@ -1,4 +1,4 @@
-package com.project.airtrack;
+package com.project.airtrack.visuals;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,6 +10,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import com.project.airtrack.R;
 
 /**
  * CircularSegmentedProgressBar is a custom view that displays a circular progress bar

@@ -23,6 +23,10 @@ public interface SensorDataDAO {
     @Query("SELECT * FROM sensors_data WHERE id IN (:sensorsDataIds)")
     List<SensorsData> loadAllByIds(int[] sensorsDataIds);
 
+    // Adaugă metoda care extrage toate înregistrările
+    @Query("SELECT * FROM sensors_data")
+    List<SensorsData> getAllSensorData();
+
     // Retrieves the most recent sensor data
     @Query("SELECT * FROM sensors_data ORDER BY id DESC LIMIT 1")
     SensorsData getLastSensorData();

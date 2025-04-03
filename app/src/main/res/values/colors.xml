@@ -14,4 +14,7 @@
     <color name="green">#37EF1F</color>
     <color name="purple">#AD1FEF</color>
     <color name="brown">#83212F</color>
+    <color name="tropical_green">#00a650</color>
+    <color name="leafy_green">#00AF54</color>
+    <color name="green_forest">#017037</color>
 </resources>

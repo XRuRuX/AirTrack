@@ -1,4 +1,4 @@
-package com.project.airtrack.visuals;
+package com.project.airtrack.visuals.chart;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -80,12 +80,16 @@ public class DataChart {
         lineChart.getAxisLeft().setDrawGridLines(false);
         lineChart.getAxisRight().setDrawGridLines(false);
 
+        // Change axis color
+        int white = ContextCompat.getColor(context, R.color.secondary_white);
+        lineChart.getAxisLeft().setAxisLineColor(white);
+        lineChart.getXAxis().setAxisLineColor(white);
 
         lineChart.getXAxis().setPosition(XAxis.XAxisPosition.TOP_INSIDE);   // Moves the X-axis labels to the top of the chart and inside the chart
         lineChart.getXAxis().setAvoidFirstLastClipping(true);               // First and last labels are not clipped or cut off at the edges of the chart
 
-        // Remove extra space on the right
-        lineChart.setViewPortOffsets(100f, 45f, 10f, 45f);
+        // Remove extra space on the sides
+        lineChart.setViewPortOffsets(100f, 10f, 10f, 45f);
 
         // Labels
         lineChart.getXAxis().setTextColor(Color.WHITE);     // Sets the color of the X-axis labels to white

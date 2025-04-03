@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
 
         processor = new DataParser();
-        mediator = new DataMediator(processor, (OnDataReceivedListener) homeFragment, (OnDataReceivedListener) temperatureFragment);
+        mediator = new DataMediator(processor, (OnDataReceivedListener) homeFragment, (OnDataReceivedListener) temperatureFragment, (OnDataReceivedListener) airFragment);
         setupBluetoothManager();
     }
 

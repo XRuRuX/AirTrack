@@ -1,4 +1,4 @@
-package com.project.airtrack.visuals;
+package com.project.airtrack.visuals.chart;
 
 import android.content.Context;
 import android.view.View;
@@ -22,12 +22,14 @@ import java.util.List;
  * real-time live data streams
  */
 public class ChartManager {
-    private DataChart aqiChart, pm25Chart;
+    private DataChart aqiChart, pm25Chart, pm10Chart, ozoneChart;
     ArrayList<Integer> timestamps = new ArrayList<>();
 
     public ChartManager(View view, Context context) {
         aqiChart = new DataChart(view, context, R.id.lineChart_AQI);
         pm25Chart = new DataChart(view, context, R.id.lineChart_pm25);
+        pm10Chart = new DataChart(view, context, R.id.lineChart_pm10);
+        ozoneChart = new DataChart(view, context, R.id.lineChart_ozone);
     }
 
     public void loadDataFromDatabase(FragmentActivity activity) {
@@ -41,12 +43,16 @@ public class ChartManager {
             if (sensorsDataList != null && !sensorsDataList.isEmpty()) {
                 ArrayList<Entry> aqiEntries = new ArrayList<>();
                 ArrayList<Entry> pm25Entries = new ArrayList<>();
+                ArrayList<Entry> pm10Entries = new ArrayList<>();
+                ArrayList<Entry> ozoneEntries = new ArrayList<>();
 
                 // Get data from the database
                 for (int i = 0; i < sensorsDataList.size(); i++) {
                     SensorsData sensor = sensorsDataList.get(i);
                     aqiEntries.add(new Entry(i, sensor.maximumAQI));
                     pm25Entries.add(new Entry(i, sensor.pm25AQI));
+                    pm10Entries.add(new Entry(i, sensor.pm10AQI));
+                    ozoneEntries.add(new Entry(i, sensor.ozoneAQI));
                     timestamps.add(sensor.timestamp);
                 }
 
@@ -54,6 +60,8 @@ public class ChartManager {
                 activity.runOnUiThread(() -> {
                     aqiChart.setChartData(aqiEntries, timestamps);
                     pm25Chart.setChartData(pm25Entries, timestamps);
+                    pm10Chart.setChartData(pm10Entries, timestamps);
+                    ozoneChart.setChartData(ozoneEntries, timestamps);
                 });
             }
         }).start();
@@ -63,5 +71,7 @@ public class ChartManager {
         timestamps.add(data.getTimestamp());
         aqiChart.addDataToChart(data.getMaximumAQI(), timestamps);
         pm25Chart.addDataToChart(data.getPm25AQI(), timestamps);
+        pm10Chart.addDataToChart(data.getPm10AQI(), timestamps);
+        ozoneChart.addDataToChart(data.getOzoneAQI(), timestamps);
     }
 }

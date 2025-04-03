@@ -43,6 +43,8 @@ public class SensorsData {
         this.humidity = humidity;
     }
 
+
+
     public EnvironmentalData toEnvironmentalData()
     {
         return new EnvironmentalData(timestamp, pm25AQI, pm10AQI, ozoneAQI, maximumAQI, temperature, humidity);

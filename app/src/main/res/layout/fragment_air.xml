@@ -1,16 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
+    android:fitsSystemWindows="true"
     tools:context=".AirFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationMenu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Air"
-        android:textSize="36sp"
-        android:gravity="center"/>
+        android:layout_height="56dp"
+        android:background="@color/black"
+        app:itemIconSize="30dp"
+        app:itemIconTint="@color/menu_item_color"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
 
-</FrameLayout>
+    <ScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationMenu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_app_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="20dp"
+                android:text="AirTrack"
+                android:textColor="@color/primary_white"
+                android:textSize="46sp" />
+
+            <TextView
+                android:id="@+id/tv_last_updated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="-10dp"
+                android:paddingBottom="15dp"
+                android:text="Last updated: 31 minutes ago"
+                android:textColor="@color/secondary_white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_live_aqi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingStart="33dp"
+                android:text="AQI: 55"
+                android:textColor="@color/primary_white"
+                android:textSize="16sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart_AQI"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="16dp" />
+
+            <TextView
+                android:id="@+id/tv_live_pm25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="33dp"
+                android:text="PM25 AQI: 23"
+                android:textColor="@color/primary_white"
+                android:textSize="16sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart_pm25"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="16dp" />
+
+            <TextView
+                android:id="@+id/tv_live_pm10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="33dp"
+                android:text="PM10 AQI: 28"
+                android:textColor="@color/primary_white"
+                android:textSize="16sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart_pm10"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="16dp" />
+
+            <TextView
+                android:id="@+id/tv_live_ozone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="33dp"
+                android:text="Ozone AQI: 28"
+                android:textColor="@color/primary_white"
+                android:textSize="16sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart_ozone"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

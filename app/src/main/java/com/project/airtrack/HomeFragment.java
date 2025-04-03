@@ -8,6 +8,7 @@ import com.project.airtrack.data.database.entities.SensorsData;
 import com.project.airtrack.data.processing.EnvironmentalData;
 import com.project.airtrack.utils.AQIFormatter;
 import com.project.airtrack.utils.TimeFormatter;
+import com.project.airtrack.visuals.CircularSegmentedProgressBar;
 
 
 import android.os.Bundle;
@@ -45,9 +46,9 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
         progressBar = view.findViewById(R.id.progressBar);
         updateUIWithLastSensorData();
 
-        // Setup scheduler to update the UI with the last
+        // Setup the scheduler to update the UI with the last time it received data
         ScheduledExecutorService lastTimeUpdatedScheduler = Executors.newScheduledThreadPool(1);
-        lastTimeUpdatedScheduler.scheduleWithFixedDelay(this::refreshLastUpdatedTime, 0, 1, TimeUnit.MINUTES);
+        lastTimeUpdatedScheduler.scheduleWithFixedDelay(this::refreshLastUpdatedTime, 1, 1, TimeUnit.MINUTES);
 
         return view;
     }

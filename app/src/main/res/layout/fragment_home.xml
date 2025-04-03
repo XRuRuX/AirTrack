@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_app_name"
         android:padding="20dp">
 
-        <com.project.airtrack.CircularSegmentedProgressBar
+        <com.project.airtrack.visuals.CircularSegmentedProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

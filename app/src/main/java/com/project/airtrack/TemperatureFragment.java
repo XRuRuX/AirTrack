@@ -23,6 +23,10 @@ import com.project.airtrack.utils.TimeFormatter;
 
 import android.text.SpannableString;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
  * TemperatureFragment is responsible for displaying detailed information about
  * temperature and humidity
@@ -40,6 +44,10 @@ public class TemperatureFragment extends Fragment implements OnDataReceivedListe
         // Inflate the layout for this fragment
         View view = initializeLayout(inflater, container);
         updateUIWithLastSensorData();
+
+        // Setup the scheduler to update the UI with the last time it received data
+        ScheduledExecutorService lastTimeUpdatedScheduler = Executors.newScheduledThreadPool(1);
+        lastTimeUpdatedScheduler.scheduleWithFixedDelay(this::refreshLastUpdatedTime, 1, 1, TimeUnit.MINUTES);
 
         return view;
     }

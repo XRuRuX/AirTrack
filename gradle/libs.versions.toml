@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.2"
+core = "1.9.1"
 junit = "4.13.2"
 junitJupiterApi = "5.10.0"
 junitJupiterParams = "5.10.0"
@@ -9,9 +10,11 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.1"
 constraintlayout = "2.2.0"
+mpandroidchart = "v3.1.0"
 roomRuntime = "2.6.1"
 
 [libraries]
+core = { module = "com.patrykandpatrick.vico:core", version.ref = "core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -22,8 +25,10 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", vers
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+views = { module = "com.patrykandpatrick.vico:views", version.ref = "core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
