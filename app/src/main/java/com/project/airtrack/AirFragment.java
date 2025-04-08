@@ -34,6 +34,8 @@ public class AirFragment extends Fragment implements OnDataReceivedListener {
     private TextView tvLivePm25;
     private TextView tvLivePm10;
     private TextView tvLiveOzone;
+    private TextView tvLiveCo;
+    private TextView tvLiveNo2;
     private TextView tvLastUpdated;
     ChartManager chartManager;
     private int lastUpdatedTime;
@@ -61,6 +63,8 @@ public class AirFragment extends Fragment implements OnDataReceivedListener {
         tvLivePm25 = view.findViewById(R.id.tv_live_pm25);
         tvLivePm10 = view.findViewById(R.id.tv_live_pm10);
         tvLiveOzone = view.findViewById(R.id.tv_live_ozone);
+        tvLiveCo = view.findViewById(R.id.tv_live_co);
+        tvLiveNo2 = view.findViewById(R.id.tv_live_no2);
         tvLastUpdated = view.findViewById(R.id.tv_last_updated);
 
         return view;
@@ -112,6 +116,12 @@ public class AirFragment extends Fragment implements OnDataReceivedListener {
                 }
                 if(tvLiveOzone != null) {
                     tvLiveOzone.setText("Ozone AQI: " + data.getOzoneAQI());
+                }
+                if(tvLiveCo != null) {
+                    tvLiveCo.setText("CO AQI: " + data.getCoAQI());
+                }
+                if(tvLiveNo2 != null) {
+                    tvLiveNo2.setText("NO2 AQI: " + data.getNo2AQI());
                 }
                 if(tvLastUpdated != null) {
                     int currentTimestamp = (int) (System.currentTimeMillis() / 1000);

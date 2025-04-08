@@ -119,6 +119,36 @@
                 android:layout_height="100dp"
                 android:padding="16dp" />
 
+            <TextView
+                android:id="@+id/tv_live_co"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="33dp"
+                android:text="CO AQI: 28"
+                android:textColor="@color/primary_white"
+                android:textSize="16sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart_co"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="16dp" />
+
+            <TextView
+                android:id="@+id/tv_live_no2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="33dp"
+                android:text="NO2 AQI: 28"
+                android:textColor="@color/primary_white"
+                android:textSize="16sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart_no2"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="16dp" />
+
         </LinearLayout>
     </ScrollView>
 

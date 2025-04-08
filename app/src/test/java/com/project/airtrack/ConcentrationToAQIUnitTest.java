@@ -55,9 +55,43 @@ public class ConcentrationToAQIUnitTest {
             "156, 254",
             "323, 260",
             "700, 447",
-            "1234, 713"
+            "1234, 999"
     })
     public void testConcentrationToAQIozone(int ozone, int expected) {
         assertEquals(expected, ConcentrationToAQI.ozone(ozone));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "-29, 0",
+            "0, 0",
+            "2.3, 26",
+            "6.6, 72",
+            "11.2, 130",
+            "14.7, 188",
+            "22.8, 250",
+            "38, 305",
+            "700, 699",
+            "1234, 999"
+    })
+    public void testConcentrationToAQIco(float co, int expected) {
+        assertEquals(expected, ConcentrationToAQI.co(co));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "-29, 0",
+            "0, 0",
+            "0.042, 40",
+            "0.057, 54",
+            "0.233, 126",
+            "0.561, 185",
+            "1.222, 296",
+            "1.9, 348",
+            "7, 700",
+            "13, 999"
+    })
+    public void testConcentrationToAQIno2(float no2, int expected) {
+        assertEquals(expected, ConcentrationToAQI.no2(no2));
     }
 }

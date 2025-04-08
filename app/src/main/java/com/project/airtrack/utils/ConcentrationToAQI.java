@@ -72,6 +72,53 @@ public class ConcentrationToAQI {
         }
     }
 
+    public static int co(float co) {
+        if (co < 0) {
+            return 0;
+        } else if (co <= 4.4) {
+            return calculateAQI(co, 0.0, 4.4, 0, 50);
+        } else if (co >= 4.5 && co <= 9.4) {
+            return calculateAQI(co, 4.5, 9.4, 51, 100);
+        } else if (co >= 9.5 && co <= 12.4) {
+            return calculateAQI(co, 9.5, 12.4, 101, 150);
+        } else if (co >= 12.5 && co <= 15.4) {
+            return calculateAQI(co, 12.5, 15.4, 151, 200);
+        } else if (co >= 15.5 && co <= 30.4) {
+            return calculateAQI(co, 15.5, 30.4, 201, 300);
+        } else if (co >= 30.5 && co <= 404.0) {
+            return calculateAQI(co, 30.5, 404.0, 301, 500);
+        } else if (co >= 404.1 && co <= 1000) {
+            return calculateAQI(co, 404.1, 1000, 501, 900);
+        }
+        else {
+            return 999;
+        }
+    }
+
+    // Official documentation refers to ppb to calculate AQI, but we receive ppm, so we divide the threshold by 1000
+    public static int no2(float no2) {
+        if (no2 < 0) {
+            return 0;
+        } else if (no2 <= 0.053) {
+            return calculateAQI(no2, 0.0, 0.053, 0, 50);
+        } else if (no2 >= 0.054 && no2 <= 0.1) {
+            return calculateAQI(no2, 0.054, 0.1, 51, 100);
+        } else if (no2 >= 0.101 && no2 <= 0.360) {
+            return calculateAQI(no2, 0.101, 0.360, 101, 150);
+        } else if (no2 >= 0.361 && no2 <= 0.649) {
+            return calculateAQI(no2, 0.361, 0.649, 151, 200);
+        } else if (no2 >= 0.650 && no2 <= 1.249) {
+            return calculateAQI(no2, 0.650, 1.249, 201, 300);
+        } else if (no2 >= 1.250 && no2 <= 4) {
+            return calculateAQI(no2, 1.250, 4.0, 301, 500);
+        } else if (no2 >= 4.001 && no2 <= 10) {
+            return calculateAQI(no2, 4.001, 10, 501, 900);
+        }
+        else {
+            return 999;
+        }
+    }
+
     private static int calculateAQI(double concentration, double cLow, double cHigh, int aqiLow, int aqiHigh) {
         double aqi = ((aqiHigh - aqiLow) / (cHigh - cLow)) * (concentration - cLow) + aqiLow;
         return Math.round((float) aqi);

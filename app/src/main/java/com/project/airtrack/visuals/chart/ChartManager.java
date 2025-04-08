@@ -22,7 +22,7 @@ import java.util.List;
  * real-time live data streams
  */
 public class ChartManager {
-    private DataChart aqiChart, pm25Chart, pm10Chart, ozoneChart;
+    private DataChart aqiChart, pm25Chart, pm10Chart, ozoneChart, coChart, no2Chart;
     ArrayList<Integer> timestamps = new ArrayList<>();
 
     public ChartManager(View view, Context context) {
@@ -30,6 +30,8 @@ public class ChartManager {
         pm25Chart = new DataChart(view, context, R.id.lineChart_pm25);
         pm10Chart = new DataChart(view, context, R.id.lineChart_pm10);
         ozoneChart = new DataChart(view, context, R.id.lineChart_ozone);
+        coChart = new DataChart(view, context, R.id.lineChart_co);
+        no2Chart = new DataChart(view, context, R.id.lineChart_no2);
     }
 
     public void loadDataFromDatabase(FragmentActivity activity) {
@@ -45,6 +47,8 @@ public class ChartManager {
                 ArrayList<Entry> pm25Entries = new ArrayList<>();
                 ArrayList<Entry> pm10Entries = new ArrayList<>();
                 ArrayList<Entry> ozoneEntries = new ArrayList<>();
+                ArrayList<Entry> coEntries = new ArrayList<>();
+                ArrayList<Entry> no2Entries = new ArrayList<>();
 
                 // Get data from the database
                 for (int i = 0; i < sensorsDataList.size(); i++) {
@@ -53,6 +57,8 @@ public class ChartManager {
                     pm25Entries.add(new Entry(i, sensor.pm25AQI));
                     pm10Entries.add(new Entry(i, sensor.pm10AQI));
                     ozoneEntries.add(new Entry(i, sensor.ozoneAQI));
+                    coEntries.add(new Entry(i, sensor.coAQI));
+                    no2Entries.add(new Entry(i, sensor.no2AQI));
                     timestamps.add(sensor.timestamp);
                 }
 
@@ -62,6 +68,8 @@ public class ChartManager {
                     pm25Chart.setChartData(pm25Entries, timestamps);
                     pm10Chart.setChartData(pm10Entries, timestamps);
                     ozoneChart.setChartData(ozoneEntries, timestamps);
+                    coChart.setChartData(coEntries, timestamps);
+                    no2Chart.setChartData(no2Entries, timestamps);
                 });
             }
         }).start();
@@ -73,5 +81,7 @@ public class ChartManager {
         pm25Chart.addDataToChart(data.getPm25AQI(), timestamps);
         pm10Chart.addDataToChart(data.getPm10AQI(), timestamps);
         ozoneChart.addDataToChart(data.getOzoneAQI(), timestamps);
+        coChart.addDataToChart(data.getCoAQI(), timestamps);
+        no2Chart.addDataToChart(data.getNo2AQI(), timestamps);
     }
 }

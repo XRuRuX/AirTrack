@@ -8,16 +8,20 @@ public class EnvironmentalData {
     private int pm25AQI;
     private int pm10AQI;
     private int ozoneAQI;
+    private int coAQI;
+    private int no2AQI;
     private int maximumAQI;
     private float temperature;
     private float humidity;
 
-    public EnvironmentalData(int timestamp, int pm25AQI, int pm10AQI, int ozoneAQI, int maximumAQI, float temperature, float humidity)
+    public EnvironmentalData(int timestamp, int pm25AQI, int pm10AQI, int ozoneAQI, int coAQI, int no2AQI, int maximumAQI, float temperature, float humidity)
     {
         this.timestamp = timestamp;
         this.pm25AQI = pm25AQI;
         this.pm10AQI = pm10AQI;
         this.ozoneAQI = ozoneAQI;
+        this.coAQI = coAQI;
+        this.no2AQI = no2AQI;
         this.maximumAQI = maximumAQI;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -43,6 +47,14 @@ public class EnvironmentalData {
 
     public int getOzoneAQI() {
         return ozoneAQI;
+    }
+
+    public int getCoAQI() {
+        return coAQI;
+    }
+
+    public int getNo2AQI() {
+        return no2AQI;
     }
 
     public int getMaximumAQI() { return maximumAQI; }

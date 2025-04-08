@@ -52,6 +52,8 @@ public class AQIFormatter {
         int pm25 = data.getPm25AQI();
         int pm10 = data.getPm10AQI();
         int ozone = data.getOzoneAQI();
+        int co = data.getCoAQI();
+        int no2 = data.getNo2AQI();
         int maximumAQI = data.getMaximumAQI();
 
         if (maximumAQI == pm25) {
@@ -60,8 +62,11 @@ public class AQIFormatter {
             return "PM10";
         } else if (maximumAQI == ozone) {
             return "OZONE";
+        } else if (maximumAQI == co) {
+            return "CARBON MONOXIDE";
+        } else if (maximumAQI == no2) {
+            return "NITROGEN DIOXIDE";
         }
-
         return "AIR QUALITY";
     }
 }

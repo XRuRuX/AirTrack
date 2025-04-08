@@ -23,6 +23,12 @@ public class SensorsData {
     @ColumnInfo(name = "ozone_AQI")
     public int ozoneAQI;
 
+    @ColumnInfo(name = "co_AQI")
+    public int coAQI;
+
+    @ColumnInfo(name = "no2_AQI")
+    public int no2AQI;
+
     @ColumnInfo(name = "max_AQI")
     public int maximumAQI;
 
@@ -32,12 +38,14 @@ public class SensorsData {
     @ColumnInfo(name = "humidity")
     public float humidity;
 
-    public SensorsData(int timestamp, int pm25AQI, int pm10AQI, int ozoneAQI, int maximumAQI, float temperature, float humidity)
+    public SensorsData(int timestamp, int pm25AQI, int pm10AQI, int ozoneAQI, int coAQI, int no2AQI, int maximumAQI, float temperature, float humidity)
     {
         this.timestamp = timestamp;
         this.pm25AQI = pm25AQI;
         this.pm10AQI = pm10AQI;
         this.ozoneAQI = ozoneAQI;
+        this.coAQI = coAQI;
+        this.no2AQI = no2AQI;
         this.maximumAQI = maximumAQI;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -47,6 +55,6 @@ public class SensorsData {
 
     public EnvironmentalData toEnvironmentalData()
     {
-        return new EnvironmentalData(timestamp, pm25AQI, pm10AQI, ozoneAQI, maximumAQI, temperature, humidity);
+        return new EnvironmentalData(timestamp, pm25AQI, pm10AQI, ozoneAQI, coAQI, no2AQI, maximumAQI, temperature, humidity);
     }
 }
