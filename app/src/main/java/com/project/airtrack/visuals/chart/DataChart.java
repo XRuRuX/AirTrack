@@ -13,7 +13,8 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.project.airtrack.IndexDateValueFormatter;
+import com.project.airtrack.visuals.chart.formatters.ChartValueFormatter;
+import com.project.airtrack.visuals.chart.formatters.IndexDateValueFormatter;
 import com.project.airtrack.R;
 
 import java.util.ArrayList;
@@ -25,17 +26,21 @@ import java.util.List;
  * different styling options and facilitates the real-time plotting of data
  */
 public class DataChart {
-    private static final int MAX_VISIBLE_ENTRIES = 10;
+    private static final int MAX_VISIBLE_ENTRIES = 7;
     private LineChart lineChart;
     private LineDataSet dataSet;
     private float lastXValue = 0;
+    private String unit;
 
-    public DataChart(@NonNull View view, Context context, int chartID) {
+    public DataChart(@NonNull View view, Context context, int chartID, String unit) {
         lineChart = view.findViewById(chartID);
 
         // Create the list of points (X, Y)
         ArrayList<Entry> entries = new ArrayList<>();
         dataSet = new LineDataSet(entries, "Values");
+
+        // Unit of values on the chart
+        this.unit = unit;
 
         // Customize the style
         styleChart(context);
@@ -62,12 +67,14 @@ public class DataChart {
 
         // Create a gradient for the fill
         int tropicalGreen = ContextCompat.getColor(context, R.color.tropical_green);
+        int veryDarkGreen = ContextCompat.getColor(context, R.color.very_dark_green);
         GradientDrawable gradientDrawable = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{tropicalGreen, Color.BLACK} // From green to black
+                new int[]{tropicalGreen, veryDarkGreen} // From green to dark green
         );
         gradientDrawable.setCornerRadius(0f);
         dataSet.setFillDrawable(gradientDrawable); // Apply gradient
+        dataSet.setFillAlpha(255);
 
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
@@ -88,9 +95,6 @@ public class DataChart {
         lineChart.getXAxis().setPosition(XAxis.XAxisPosition.TOP_INSIDE);   // Moves the X-axis labels to the top of the chart and inside the chart
         lineChart.getXAxis().setAvoidFirstLastClipping(true);               // First and last labels are not clipped or cut off at the edges of the chart
 
-        // Remove extra space on the sides
-        lineChart.setViewPortOffsets(100f, 10f, 10f, 45f);
-
         // Labels
         lineChart.getXAxis().setTextColor(Color.WHITE);     // Sets the color of the X-axis labels to white
         lineChart.getAxisLeft().setTextColor(Color.WHITE);  // Set the color white for the left Y-axis labels
@@ -100,7 +104,7 @@ public class DataChart {
         lineChart.getAxisRight().setEnabled(false);
 
         // Removes extra space above and below on the left axis
-        lineChart.getAxisLeft().setSpaceTop(2f);
+        lineChart.getAxisLeft().setSpaceTop(30f);
         lineChart.getAxisLeft().setSpaceBottom(2f);
 
         // Enable gestures
@@ -116,7 +120,24 @@ public class DataChart {
         // Disable the legend
         lineChart.getLegend().setEnabled(false);
 
-        dataSet.setDrawValues(false); // Hide point values
+        // Disable the left axis
+        lineChart.getAxisLeft().setEnabled(false);
+
+        // Disable X axis
+        lineChart.getXAxis().setDrawAxisLine(false);
+
+        // Values above the dots
+        dataSet.setDrawValues(true);
+        int primaryWhite = ContextCompat.getColor(context, R.color.primary_white);
+        dataSet.setValueTextColor(primaryWhite);
+        dataSet.setValueTextSize(10f);
+
+        // Offsets for better positioning
+        lineChart.getXAxis().setYOffset(-2f);
+        lineChart.setViewPortOffsets(-50f, 30f, -50f, 0f);
+
+        // Crop the first and last values to better see the chart
+        lineChart.getXAxis().setAvoidFirstLastClipping(true);
 
         lineChart.invalidate(); // Redraw
     }
@@ -140,10 +161,12 @@ public class DataChart {
         }
         // We set the formatter for the X axis using timestamps
         lineChart.getXAxis().setValueFormatter(new IndexDateValueFormatter(timestamps));
+        // TODO
+        dataSet.setValueFormatter(new ChartValueFormatter(unit));
         lineChart.invalidate();
     }
 
-    public void addDataToChart(int value, ArrayList<Integer> timestamps) {
+    public void addDataToChart(float value, ArrayList<Integer> timestamps) {
         // We continue from the last value on the X axis
         float newX = lastXValue + 1;
         lastXValue = newX;
@@ -153,11 +176,14 @@ public class DataChart {
         // We update the X-axis formatter with the new timestamps
         lineChart.getXAxis().setValueFormatter(new IndexDateValueFormatter(timestamps));
 
+        // TODO
+        dataSet.setValueFormatter(new ChartValueFormatter(unit));
+
         // Move the view to show the last point added
         lineChart.moveViewToX(dataSet.getEntryCount());
     }
 
-    private void addNewEntry(float x, int y) {
+    private void addNewEntry(float x, float y) {
         // Check if the line chart has data and at least one dataset
         if (lineChart.getData() != null && lineChart.getData().getDataSetCount() > 0) {
             dataSet.addEntry(new Entry(x, y));

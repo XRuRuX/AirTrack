@@ -1,4 +1,4 @@
-package com.project.airtrack;
+package com.project.airtrack.visuals.chart.formatters;
 
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import java.text.SimpleDateFormat;
@@ -26,8 +26,8 @@ public class IndexDateValueFormatter extends ValueFormatter {
     @Override
     public String getFormattedValue(float value) {
         int index = Math.round(value);
-        // We only display the label at every third point
-        if (index % 3 != 0) {
+        // We only display the label at every fourth point
+        if (index % 4 != 0) {
             return "";
         }
         if (index < 0 || index >= timestamps.size()) {

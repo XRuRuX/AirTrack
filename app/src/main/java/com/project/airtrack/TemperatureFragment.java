@@ -13,19 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.data.Entry;
 import com.project.airtrack.application.AirTrackApplication;
 import com.project.airtrack.bluetooth.OnDataReceivedListener;
 import com.project.airtrack.data.database.ApplicationDatabase;
 import com.project.airtrack.data.database.dao.SensorDataDAO;
 import com.project.airtrack.data.database.entities.SensorsData;
 import com.project.airtrack.data.processing.EnvironmentalData;
-import com.project.airtrack.utils.TimeFormatter;
+import com.project.airtrack.visuals.chart.DataChart;
 
 import android.text.SpannableString;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TemperatureFragment is responsible for displaying detailed information about
@@ -35,8 +35,8 @@ import java.util.concurrent.TimeUnit;
 public class TemperatureFragment extends Fragment implements OnDataReceivedListener {
     private TextView tvTemperatureValue;
     private TextView tvHumidityValue;
-    private TextView tvLastUpdated;
-    private int lastUpdatedTime;
+    private DataChart temperatureChart, humidityChart;
+    ArrayList<Integer> timestamps = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,10 +44,6 @@ public class TemperatureFragment extends Fragment implements OnDataReceivedListe
         // Inflate the layout for this fragment
         View view = initializeLayout(inflater, container);
         updateUIWithLastSensorData();
-
-        // Setup the scheduler to update the UI with the last time it received data
-        ScheduledExecutorService lastTimeUpdatedScheduler = Executors.newScheduledThreadPool(1);
-        lastTimeUpdatedScheduler.scheduleWithFixedDelay(this::refreshLastUpdatedTime, 1, 1, TimeUnit.MINUTES);
 
         return view;
     }
@@ -57,7 +53,8 @@ public class TemperatureFragment extends Fragment implements OnDataReceivedListe
         View view = inflater.inflate(R.layout.fragment_temperature, container, false);
         tvTemperatureValue = view.findViewById(R.id.tv_temperature_value);
         tvHumidityValue = view.findViewById(R.id.tv_humidity_value);
-        tvLastUpdated = view.findViewById(R.id.tv_last_updated);
+        temperatureChart = new DataChart(view, requireContext(), R.id.lineChart_temperature, "°C");
+        humidityChart = new DataChart(view, requireContext(), R.id.lineChart_humidity, "%");
         return view;
     }
 
@@ -75,6 +72,27 @@ public class TemperatureFragment extends Fragment implements OnDataReceivedListe
                     EnvironmentalData lastAQIValue = sensorsData.toEnvironmentalData();
                     onDataReceived(lastAQIValue);
                 }
+
+                List<SensorsData> sensorsDataList = sensorDataDAO.getAllSensorData();
+                // Check to see if we have data available
+                if (sensorsDataList != null && !sensorsDataList.isEmpty()) {
+                    ArrayList<Entry> temperatureEntries = new ArrayList<>();
+                    ArrayList<Entry> humidityEntries = new ArrayList<>();
+
+                    // Get data from the database
+                    for (int i = 0; i < sensorsDataList.size(); i++) {
+                        SensorsData sensor = sensorsDataList.get(i);
+                        temperatureEntries.add(new Entry(i, sensor.temperature));
+                        humidityEntries.add(new Entry(i, sensor.humidity));
+                        timestamps.add(sensor.timestamp);
+                    }
+
+                    // We update the charts on the UI thread
+                    requireActivity().runOnUiThread(() -> {
+                        temperatureChart.setChartData(temperatureEntries, timestamps);
+                        humidityChart.setChartData(humidityEntries, timestamps);
+                    });
+                }
             }
         }).start();
     }
@@ -88,36 +106,28 @@ public class TemperatureFragment extends Fragment implements OnDataReceivedListe
                     String temperature = String.valueOf(data.getTemperature());
                     String fullText = temperature + "°C";
 
+                    // Spannable strings so that the size between value and unit is different
                     SpannableString spannableString = new SpannableString(fullText);
-
-                    spannableString.setSpan(new AbsoluteSizeSpan(44, true), 0, temperature.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    spannableString.setSpan(new AbsoluteSizeSpan(38, true), temperature.length(), fullText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannableString.setSpan(new AbsoluteSizeSpan(50, true), 0, temperature.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannableString.setSpan(new AbsoluteSizeSpan(42, true), temperature.length(), fullText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     tvTemperatureValue.setText(spannableString);
                 }
                 if(tvHumidityValue != null) {
-                    tvHumidityValue.setText(String.valueOf(data.getHumidity()) + "%");
-                }
-                if(tvLastUpdated != null) {
-                    int currentTimestamp = (int) (System.currentTimeMillis() / 1000);
-                    lastUpdatedTime = data.getTimestamp();
-                    int timePassedSinceLastUpdate = currentTimestamp - lastUpdatedTime;
-                    tvLastUpdated.setText("Last updated: " + TimeFormatter.secondsToStringFormat(timePassedSinceLastUpdate));
+                    String humidity = String.valueOf(data.getHumidity());
+                    String fullText = humidity + "%";
+
+                    // Spannable strings so that the size between value and unit is different
+                    SpannableString spannableString = new SpannableString(fullText);
+                    spannableString.setSpan(new AbsoluteSizeSpan(50, true), 0, humidity.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannableString.setSpan(new AbsoluteSizeSpan(42, true), humidity.length(), fullText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    tvHumidityValue.setText(spannableString);
                 }
             });
         }
-    }
-
-    // Refresh the UI with the last time that the device received data
-    private void refreshLastUpdatedTime(){
-        int currentTimestamp = (int) (System.currentTimeMillis() / 1000);
-        int timePassedSinceLastUpdate = currentTimestamp - lastUpdatedTime;
-
-        // Updating text views only works on the UI Thread
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                tvLastUpdated.setText("Last updated: " + TimeFormatter.secondsToStringFormat(timePassedSinceLastUpdate));
-            });
-        }
+        timestamps.add(data.getTimestamp());
+        temperatureChart.addDataToChart(data.getTemperature(), timestamps);
+        humidityChart.addDataToChart(data.getHumidity(), timestamps);
     }
 }

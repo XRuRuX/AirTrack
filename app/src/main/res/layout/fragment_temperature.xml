@@ -22,65 +22,40 @@
         app:menu="@menu/bottom_navigation_menu" />
 
     <ImageView
-        android:id="@+id/iv_background_bottom"
+        android:id="@+id/iv_top_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="0dp"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
+        android:padding="0dp"
         android:scaleType="centerInside"
-        android:src="@drawable/green_city_landscape_background"/>
-
-    <TextView
-        android:id="@+id/tv_app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="20dp"
+        android:src="@drawable/temperature_top_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="AirTrack"
-        android:textColor="@color/primary_white"
-        android:textSize="46sp" />
-
-
-    <TextView
-        android:id="@+id/tv_last_updated"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
-        android:layout_marginTop="-10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_app_name"
-        android:text="Last updated: 31 minutes ago"
-        android:textColor="@color/secondary_white"
-        android:textSize="16sp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/main_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
+        android:id="@+id/main_text_container"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:gravity="center_vertical"
-        app:layout_constraintBottom_toTopOf="@+id/iv_background_bottom"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_top_image"
+        app:layout_constraintEnd_toEndOf="@+id/iv_top_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_last_updated">
+        app:layout_constraintTop_toTopOf="@+id/iv_top_image">
 
         <LinearLayout
-            android:layout_width="10dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:layout_marginLeft="10dp"
-
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/temperatureLabel"
+                android:id="@+id/tv_temperature_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -92,46 +67,114 @@
                 android:id="@+id/tv_temperature_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
                 android:text="22.3°C"
                 android:textColor="@color/primary_white"
-                android:textSize="44sp"
-                android:layout_marginTop="-10dp"/>
+                android:textSize="50sp" />
         </LinearLayout>
 
         <View
             android:layout_width="2dp"
             android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="8dp"
-            android:background="#FFFFFF"
-            android:layout_gravity="center_vertical"/>
+            android:background="#FFFFFF" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:layout_marginRight="10dp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/humidityLabel"
+                android:id="@+id/tv_humidity_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
                 android:text="Humidity"
-                android:textSize="20sp"
-                android:textColor="@color/gray_white"/>
+                android:textColor="@color/gray_white"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tv_humidity_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
                 android:text="52.7%"
-                android:textSize="44sp"
                 android:textColor="@color/primary_white"
-                android:layout_marginTop="-10dp"/>
+                android:textSize="50sp" />
         </LinearLayout>
 
     </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_temperature"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:translationY="-20dp"
+        app:cardBackgroundColor="@color/dark_green"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/cv_humidity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_top_image" >
+
+        <ImageView
+            android:id="@+id/iv_leaves_chart_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:alpha="0.03"
+            android:scaleType="fitEnd"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:src="@drawable/long_green_leaves" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </com.github.mikephil.charting.charts.LineChart>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_humidity"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:translationY="-5dp"
+        app:cardBackgroundColor="@color/dark_green"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cv_temperature">
+
+        <ImageView
+            android:id="@+id/iv_leaves_chart_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:alpha="0.03"
+            android:scaleType="fitEnd"
+            android:scaleX="-1"
+            android:src="@drawable/long_green_leaves" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart_humidity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </com.github.mikephil.charting.charts.LineChart>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

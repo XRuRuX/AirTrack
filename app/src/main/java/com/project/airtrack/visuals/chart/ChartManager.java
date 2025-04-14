@@ -26,12 +26,12 @@ public class ChartManager {
     ArrayList<Integer> timestamps = new ArrayList<>();
 
     public ChartManager(View view, Context context) {
-        aqiChart = new DataChart(view, context, R.id.lineChart_AQI);
-        pm25Chart = new DataChart(view, context, R.id.lineChart_pm25);
-        pm10Chart = new DataChart(view, context, R.id.lineChart_pm10);
-        ozoneChart = new DataChart(view, context, R.id.lineChart_ozone);
-        coChart = new DataChart(view, context, R.id.lineChart_co);
-        no2Chart = new DataChart(view, context, R.id.lineChart_no2);
+        aqiChart = new DataChart(view, context, R.id.lineChart_AQI, "");
+        pm25Chart = new DataChart(view, context, R.id.lineChart_pm25, "");
+        pm10Chart = new DataChart(view, context, R.id.lineChart_pm10, "");
+        ozoneChart = new DataChart(view, context, R.id.lineChart_ozone, "");
+        coChart = new DataChart(view, context, R.id.lineChart_co, "");
+        no2Chart = new DataChart(view, context, R.id.lineChart_no2, "");
     }
 
     public void loadDataFromDatabase(FragmentActivity activity) {
