@@ -134,7 +134,7 @@ public class DataChart {
 
         // Offsets for better positioning
         lineChart.getXAxis().setYOffset(-2f);
-        lineChart.setViewPortOffsets(-50f, 30f, -50f, 0f);
+        lineChart.setViewPortOffsets(-50f, 40f, -50f, 0f);
 
         // Crop the first and last values to better see the chart
         lineChart.getXAxis().setAvoidFirstLastClipping(true);

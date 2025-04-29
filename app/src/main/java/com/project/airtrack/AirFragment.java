@@ -30,25 +30,20 @@ import java.util.concurrent.TimeUnit;
  * It manages and organizes various chart instances, displaying data from databases and real-time streams.
  */
 public class AirFragment extends Fragment implements OnDataReceivedListener {
+    private TextView tvLiveAQITop;
     private TextView tvLiveAQI;
     private TextView tvLivePm25;
     private TextView tvLivePm10;
     private TextView tvLiveOzone;
     private TextView tvLiveCo;
     private TextView tvLiveNo2;
-    private TextView tvLastUpdated;
     ChartManager chartManager;
-    private int lastUpdatedTime;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = initializeLayout(inflater, container);
         updateUIWithLastSensorData();
-
-        // Setup the scheduler to update the UI with the last time it received data
-        ScheduledExecutorService lastTimeUpdatedScheduler = Executors.newScheduledThreadPool(1);
-        lastTimeUpdatedScheduler.scheduleWithFixedDelay(this::refreshLastUpdatedTime, 1, 1, TimeUnit.MINUTES);
 
         chartManager = new ChartManager(view, requireContext());
         chartManager.loadDataFromDatabase(requireActivity());
@@ -59,13 +54,13 @@ public class AirFragment extends Fragment implements OnDataReceivedListener {
     // Initializes the layout for the fragment and retrieves references to UI components
     private View initializeLayout(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.fragment_air, container, false);
+        tvLiveAQITop = view.findViewById(R.id.tv_aqi_value);
         tvLiveAQI = view.findViewById(R.id.tv_live_aqi);
         tvLivePm25 = view.findViewById(R.id.tv_live_pm25);
         tvLivePm10 = view.findViewById(R.id.tv_live_pm10);
         tvLiveOzone = view.findViewById(R.id.tv_live_ozone);
         tvLiveCo = view.findViewById(R.id.tv_live_co);
         tvLiveNo2 = view.findViewById(R.id.tv_live_no2);
-        tvLastUpdated = view.findViewById(R.id.tv_last_updated);
 
         return view;
     }
@@ -88,46 +83,30 @@ public class AirFragment extends Fragment implements OnDataReceivedListener {
         }).start();
     }
 
-    // Refresh the UI with the last time that the device received data
-    private void refreshLastUpdatedTime(){
-        int currentTimestamp = (int) (System.currentTimeMillis() / 1000);
-        int timePassedSinceLastUpdate = currentTimestamp - lastUpdatedTime;
-
-        // Updating text views only works on the UI Thread
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                tvLastUpdated.setText("Last updated: " + TimeFormatter.secondsToStringFormat(timePassedSinceLastUpdate));
-            });
-        }
-    }
-
     @Override
     public void onDataReceived(EnvironmentalData data) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
+                if(tvLiveAQITop != null) {
+                    tvLiveAQITop.setText(String.valueOf(data.getMaximumAQI()));
+                }
                 if (tvLiveAQI != null) {
-                    tvLiveAQI.setText("AQI: " + data.getMaximumAQI());
+                    tvLiveAQI.setText(String.valueOf(data.getMaximumAQI()));
                 }
                 if(tvLivePm25 != null) {
-                    tvLivePm25.setText("PM2.5 AQI: " + data.getPm25AQI());
+                    tvLivePm25.setText(data.getPm25AQI() + " µg/m³");
                 }
                 if(tvLivePm10 != null) {
-                    tvLivePm10.setText("PM10 AQI: " + data.getPm10AQI());;
+                    tvLivePm10.setText(data.getPm10AQI() + " µg/m³");
                 }
                 if(tvLiveOzone != null) {
-                    tvLiveOzone.setText("Ozone AQI: " + data.getOzoneAQI());
+                    tvLiveOzone.setText(data.getOzoneAQI() + " ppb");
                 }
                 if(tvLiveCo != null) {
-                    tvLiveCo.setText("CO AQI: " + data.getCoAQI());
+                    tvLiveCo.setText(data.getCoAQI() + " ppm");
                 }
                 if(tvLiveNo2 != null) {
-                    tvLiveNo2.setText("NO2 AQI: " + data.getNo2AQI());
-                }
-                if(tvLastUpdated != null) {
-                    int currentTimestamp = (int) (System.currentTimeMillis() / 1000);
-                    lastUpdatedTime = data.getTimestamp();
-                    int timePassedSinceLastUpdate = currentTimestamp - lastUpdatedTime;
-                    tvLastUpdated.setText("Last updated: " + TimeFormatter.secondsToStringFormat(timePassedSinceLastUpdate));
+                    tvLiveNo2.setText(data.getNo2AQI() + " ppm");
                 }
                 // Stream live data to ChartManager for chart updates
                 chartManager.onLiveDataReceived(data);
