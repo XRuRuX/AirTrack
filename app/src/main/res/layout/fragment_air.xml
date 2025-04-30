@@ -428,7 +428,7 @@
                         android:gravity="end"
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginBottom="1dp"
-                        android:text="0 ppm"
+                        android:text="0 ppb"
                         android:textColor="@color/primary_white"
                         android:textSize="14sp" />
                 </LinearLayout>

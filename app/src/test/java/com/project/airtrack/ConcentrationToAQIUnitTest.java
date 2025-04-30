@@ -82,14 +82,14 @@ public class ConcentrationToAQIUnitTest {
     @CsvSource({
             "-29, 0",
             "0, 0",
-            "0.042, 40",
-            "0.057, 54",
-            "0.233, 126",
-            "0.561, 185",
-            "1.222, 296",
-            "1.9, 348",
-            "7, 700",
-            "13, 999"
+            "42, 40",
+            "57, 55",
+            "233, 126",
+            "561, 185",
+            "1222, 296",
+            "1900, 348",
+            "7000, 700",
+            "13000, 999"
     })
     public void testConcentrationToAQIno2(float no2, int expected) {
         assertEquals(expected, ConcentrationToAQI.no2(no2));

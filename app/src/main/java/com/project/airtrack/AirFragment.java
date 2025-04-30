@@ -94,19 +94,19 @@ public class AirFragment extends Fragment implements OnDataReceivedListener {
                     tvLiveAQI.setText(String.valueOf(data.getMaximumAQI()));
                 }
                 if(tvLivePm25 != null) {
-                    tvLivePm25.setText(data.getPm25AQI() + " µg/m³");
+                    tvLivePm25.setText(data.getPm25() + " µg/m³");
                 }
                 if(tvLivePm10 != null) {
-                    tvLivePm10.setText(data.getPm10AQI() + " µg/m³");
+                    tvLivePm10.setText(data.getPm10() + " µg/m³");
                 }
                 if(tvLiveOzone != null) {
-                    tvLiveOzone.setText(data.getOzoneAQI() + " ppb");
+                    tvLiveOzone.setText(data.getOzone() + " ppb");
                 }
                 if(tvLiveCo != null) {
-                    tvLiveCo.setText(data.getCoAQI() + " ppm");
+                    tvLiveCo.setText(data.getCo() + " ppm");
                 }
                 if(tvLiveNo2 != null) {
-                    tvLiveNo2.setText(data.getNo2AQI() + " ppm");
+                    tvLiveNo2.setText(data.getNo2() + " ppb");
                 }
                 // Stream live data to ChartManager for chart updates
                 chartManager.onLiveDataReceived(data);

@@ -54,11 +54,11 @@ public class ChartManager {
                 for (int i = 0; i < sensorsDataList.size(); i++) {
                     SensorsData sensor = sensorsDataList.get(i);
                     aqiEntries.add(new Entry(i, sensor.maximumAQI));
-                    pm25Entries.add(new Entry(i, sensor.pm25AQI));
-                    pm10Entries.add(new Entry(i, sensor.pm10AQI));
-                    ozoneEntries.add(new Entry(i, sensor.ozoneAQI));
-                    coEntries.add(new Entry(i, sensor.coAQI));
-                    no2Entries.add(new Entry(i, sensor.no2AQI));
+                    pm25Entries.add(new Entry(i, sensor.pm25));
+                    pm10Entries.add(new Entry(i, sensor.pm10));
+                    ozoneEntries.add(new Entry(i, sensor.ozone));
+                    coEntries.add(new Entry(i, sensor.co));
+                    no2Entries.add(new Entry(i, sensor.no2));
                     timestamps.add(sensor.timestamp);
                 }
 
@@ -78,10 +78,10 @@ public class ChartManager {
     public void onLiveDataReceived(EnvironmentalData data) {
         timestamps.add(data.getTimestamp());
         aqiChart.addDataToChart(data.getMaximumAQI(), timestamps);
-        pm25Chart.addDataToChart(data.getPm25AQI(), timestamps);
-        pm10Chart.addDataToChart(data.getPm10AQI(), timestamps);
-        ozoneChart.addDataToChart(data.getOzoneAQI(), timestamps);
-        coChart.addDataToChart(data.getCoAQI(), timestamps);
-        no2Chart.addDataToChart(data.getNo2AQI(), timestamps);
+        pm25Chart.addDataToChart(data.getPm25(), timestamps);
+        pm10Chart.addDataToChart(data.getPm10(), timestamps);
+        ozoneChart.addDataToChart(data.getOzone(), timestamps);
+        coChart.addDataToChart(data.getCo(), timestamps);
+        no2Chart.addDataToChart(data.getNo2(), timestamps);
     }
 }

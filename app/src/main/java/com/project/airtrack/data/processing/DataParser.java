@@ -39,7 +39,7 @@ public class DataParser implements DataProcessor {
             Log.i("AQI", "PM10 concentration: " + pm10 + " / AQI: " + pm10AQI);
             Log.i("AQI", "Ozone concentration in ppb: " + ozone + " / AQI: " + ozoneAQI);
             Log.i("AQI", "CO concentration in ppm: " + co + " / AQI: " + coAQI);
-            Log.i("AQI", "NO2 concentration in ppm: " + no2 + " / AQI: " + no2AQI);
+            Log.i("AQI", "NO2 concentration in ppb: " + no2 + " / AQI: " + no2AQI);
             Log.i("DHT22", "Temperature: " + temperature + " / Humidity: " + humidity);
 
             // Temporary
@@ -47,9 +47,9 @@ public class DataParser implements DataProcessor {
             ApplicationDatabase db = AirTrackApplication.getDatabase();
             SensorDataDAO sensorDataDAO = db.sensorDataDAO();
             int maximumAQI = selectMaximumAQI(pm25AQI, pm10AQI, ozoneAQI, coAQI, no2AQI);
-            sensorDataDAO.insert(new SensorsData(timestamp, pm25AQI, pm10AQI, ozoneAQI, coAQI, no2AQI, maximumAQI, temperature, humidity));
+            sensorDataDAO.insert(new SensorsData(timestamp, pm25, pm10, ozone, co, no2, maximumAQI, temperature, humidity));
 
-            return new EnvironmentalData(timestamp, pm25AQI, pm10AQI, ozoneAQI, coAQI, no2AQI, maximumAQI, temperature, humidity);
+            return new EnvironmentalData(timestamp, pm25, pm10, ozone, co, no2, maximumAQI, temperature, humidity);
         }
         else {
             throw new DataParsingException("Invalid packet received!");

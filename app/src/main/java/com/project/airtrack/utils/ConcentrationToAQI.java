@@ -99,20 +99,20 @@ public class ConcentrationToAQI {
     public static int no2(float no2) {
         if (no2 < 0) {
             return 0;
-        } else if (no2 <= 0.053) {
-            return calculateAQI(no2, 0.0, 0.053, 0, 50);
-        } else if (no2 >= 0.054 && no2 <= 0.1) {
-            return calculateAQI(no2, 0.054, 0.1, 51, 100);
-        } else if (no2 >= 0.101 && no2 <= 0.360) {
-            return calculateAQI(no2, 0.101, 0.360, 101, 150);
-        } else if (no2 >= 0.361 && no2 <= 0.649) {
-            return calculateAQI(no2, 0.361, 0.649, 151, 200);
-        } else if (no2 >= 0.650 && no2 <= 1.249) {
-            return calculateAQI(no2, 0.650, 1.249, 201, 300);
-        } else if (no2 >= 1.250 && no2 <= 4) {
-            return calculateAQI(no2, 1.250, 4.0, 301, 500);
-        } else if (no2 >= 4.001 && no2 <= 10) {
-            return calculateAQI(no2, 4.001, 10, 501, 900);
+        } else if (no2 <= 53) {
+            return calculateAQI(no2, 0.0, 53, 0, 50);
+        } else if (no2 >= 53.1 && no2 <= 100) {
+            return calculateAQI(no2, 53.1, 100, 51, 100);
+        } else if (no2 >= 100.1 && no2 <= 360) {
+            return calculateAQI(no2, 100.1, 360, 101, 150);
+        } else if (no2 >= 360.1 && no2 <= 649) {
+            return calculateAQI(no2, 360.1, 649, 151, 200);
+        } else if (no2 >= 649.1 && no2 <= 1249) {
+            return calculateAQI(no2, 649.1, 1249, 201, 300);
+        } else if (no2 >= 1249.1 && no2 <= 4000) {
+            return calculateAQI(no2, 1249.1, 4000, 301, 500);
+        } else if (no2 >= 4000.1 && no2 <= 10000) {
+            return calculateAQI(no2, 4000.1, 10000, 501, 900);
         }
         else {
             return 999;

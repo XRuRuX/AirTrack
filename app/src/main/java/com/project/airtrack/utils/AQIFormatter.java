@@ -49,22 +49,29 @@ public class AQIFormatter {
 
     // Return a String with the name of the pollutant with the highest AQI
     public static String getPollutantWithHighestAQI(EnvironmentalData data) {
-        int pm25 = data.getPm25AQI();
-        int pm10 = data.getPm10AQI();
-        int ozone = data.getOzoneAQI();
-        int co = data.getCoAQI();
-        int no2 = data.getNo2AQI();
+        int pm25 = data.getPm25();
+        int pm10 = data.getPm10();
+        float ozone = data.getOzone();
+        float co = data.getCo();
+        float no2 = data.getNo2();
         int maximumAQI = data.getMaximumAQI();
 
-        if (maximumAQI == pm25) {
+        // Calculate AQI based on the pollutant values
+        int pm25AQI = ConcentrationToAQI.pm25(pm25);
+        int pm10AQI = ConcentrationToAQI.pm10(pm10);
+        int ozoneAQI = ConcentrationToAQI.ozone(ozone);
+        int coAQI = ConcentrationToAQI.co(co);
+        int no2AQI = ConcentrationToAQI.no2(no2);
+
+        if (maximumAQI == pm25AQI) {
             return "PM2.5";
-        } else if (maximumAQI == pm10) {
+        } else if (maximumAQI == pm10AQI) {
             return "PM10";
-        } else if (maximumAQI == ozone) {
+        } else if (maximumAQI == ozoneAQI) {
             return "OZONE";
-        } else if (maximumAQI == co) {
+        } else if (maximumAQI == coAQI) {
             return "CARBON MONOXIDE";
-        } else if (maximumAQI == no2) {
+        } else if (maximumAQI == no2AQI) {
             return "NITROGEN DIOXIDE";
         }
         return "AIR QUALITY";

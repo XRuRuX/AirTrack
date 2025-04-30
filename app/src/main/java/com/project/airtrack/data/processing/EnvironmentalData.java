@@ -5,23 +5,23 @@ package com.project.airtrack.data.processing;
  */
 public class EnvironmentalData {
     private int timestamp;
-    private int pm25AQI;
-    private int pm10AQI;
-    private int ozoneAQI;
-    private int coAQI;
-    private int no2AQI;
+    private int pm25;
+    private int pm10;
+    private float ozone;
+    private float co;
+    private float no2;
     private int maximumAQI;
     private float temperature;
     private float humidity;
 
-    public EnvironmentalData(int timestamp, int pm25AQI, int pm10AQI, int ozoneAQI, int coAQI, int no2AQI, int maximumAQI, float temperature, float humidity)
+    public EnvironmentalData(int timestamp, int pm25, int pm10, float ozone, float co, float no2, int maximumAQI, float temperature, float humidity)
     {
         this.timestamp = timestamp;
-        this.pm25AQI = pm25AQI;
-        this.pm10AQI = pm10AQI;
-        this.ozoneAQI = ozoneAQI;
-        this.coAQI = coAQI;
-        this.no2AQI = no2AQI;
+        this.pm25 = pm25;
+        this.pm10 = pm10;
+        this.ozone = ozone;
+        this.co = co;
+        this.no2 = no2;
         this.maximumAQI = maximumAQI;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -29,32 +29,24 @@ public class EnvironmentalData {
 
     public int getTimestamp() { return timestamp; }
 
-    public int getPm25AQI() {
-        return pm25AQI;
+    public int getPm25() {
+        return pm25;
     }
 
-    public void setPm25AQI(int pm25AQI) {
-        this.pm25AQI = pm25AQI;
+    public int getPm10() {
+        return pm10;
     }
 
-    public int getPm10AQI() {
-        return pm10AQI;
+    public float getOzone() {
+        return ozone;
     }
 
-    public void setPm10AQI(int pm10AQI) {
-        this.pm10AQI = pm10AQI;
+    public float getCo() {
+        return co;
     }
 
-    public int getOzoneAQI() {
-        return ozoneAQI;
-    }
-
-    public int getCoAQI() {
-        return coAQI;
-    }
-
-    public int getNo2AQI() {
-        return no2AQI;
+    public float getNo2() {
+        return no2;
     }
 
     public int getMaximumAQI() { return maximumAQI; }

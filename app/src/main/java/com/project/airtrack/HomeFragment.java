@@ -89,11 +89,6 @@ public class HomeFragment extends Fragment implements OnDataReceivedListener {
                 {
                     EnvironmentalData lastAQIValue = sensorsData.toEnvironmentalData();
                     onDataReceived(lastAQIValue);
-                    int maximumAQI = lastAQIValue.getMaximumAQI();
-                    progressBar.setProgress(AQIFormatter.toProgress(maximumAQI));
-                    tvIndicatorText.setText(AQIFormatter.toString(maximumAQI));
-                    String pollutant = AQIFormatter.getPollutantWithHighestAQI(lastAQIValue);
-                    tvPollutant.setText(pollutant);
                 }
             }
         }).start();

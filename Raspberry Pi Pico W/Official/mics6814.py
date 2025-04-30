@@ -1,7 +1,7 @@
 import machine, time
 
 class MICS6814:
-    def __init__(self, adc_pin_CO=27, adc_pin_NO2=28, adc_ref=3.3, sensor_supply=5.0, Rload=33000, R0_CO = 1156815.3, R0_NO2 = 18834710.0):
+    def __init__(self, adc_pin_CO=27, adc_pin_NO2=28, adc_ref=3.3, sensor_supply=5.0, Rload=56000, R0_CO = 1662954.0, R0_NO2 = 21113780.0):
         self.adc_CO_n = adc_pin_CO
         self.adc_NO2_n = adc_pin_NO2
         self.adc_CO = machine.ADC(adc_pin_CO)
@@ -66,7 +66,7 @@ class MICS6814:
         print("Calibration completed. New value of R0 for CO = {:.1f} Ω".format(new_R0))
         return new_R0
 
-    def calibrate_sensor_NO2(self, cal_time=600, ambient_ppm=0.2):
+    def calibrate_sensor_NO2(self, cal_time=600, ambient_ppm=0.05):
         count, total_Rs = self.read_sensor_average(cal_time, 28)
 
         # The arithmetic mean of the values ​​is calculated
@@ -157,9 +157,10 @@ class MICS6814:
             Rs = res
             if adc_pin == self.adc_CO_n:
                 ppm = self.calc_co_ppm(Rs)
+                return ppm
             elif adc_pin == self.adc_NO2_n:
-                ppm = self.calc_no2_ppm(Rs)
-            return ppm
+                ppb = self.calc_no2_ppm(Rs) * 1000
+                return ppb
         else:
             return None
 
@@ -172,7 +173,7 @@ calibration_time = 60
 if __name__ == '__main__':
     sensor = MICS6814()
     #sensor.calibrate_sensor_CO(calibration_time)
-    #sensor.calibrate_sensor_NO2(calibration_time)
+    sensor.calibrate_sensor_NO2(calibration_time)
     while True:
         co = sensor.get_data(co_pin)
         no2 = sensor.get_data(no2_pin)

@@ -24,11 +24,11 @@ class PacketBuilder:
         temp += ozone_int.to_bytes(1, 'big')
         temp += ozone_decimal.to_bytes(1, 'big')
         co_int = int(co) # Only the integer part
-        co_decimal = int((co - co_int) * 10) # Decimal part
+        co_decimal = int((co - co_int) * 100) # Decimal part
         temp += co_int.to_bytes(2, 'big')
         temp += co_decimal.to_bytes(1, 'big')
         no2_int = int(no2) # Only the integer part
-        no2_decimal = int((no2 - no2_int) * 10) # Decimal part
+        no2_decimal = int((no2 - no2_int) * 100) # Decimal part
         temp += no2_int.to_bytes(1, 'big')
         temp += no2_decimal.to_bytes(1, 'big')
         temperature_int = int(temperature) # Only the integer part

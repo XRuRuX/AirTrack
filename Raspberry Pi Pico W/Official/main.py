@@ -44,10 +44,10 @@ while True:
         no2 = round(mics6814.get_data(28), 2)
         if no2 and co:
             print(f"CO: {co} ppm")
-            print(f"NO2: {no2} ppm")
+            print(f"NO2: {no2} ppb")
             
         # Build packet according to documentation
-        packet = PacketBuilder.encode("A7", 1, 16, resultPMS5003['PM2.5'], resultPMS5003['PM10'], mq131_data, co, no2, dht_data['Temperature'], dht_data['Humidity'])
+        packet = PacketBuilder.encode("A7", 1, 21, resultPMS5003['PM2.5'], resultPMS5003['PM10'], mq131_data, co, no2, dht_data['Temperature'], dht_data['Humidity'])
 
         print(packet)
         uart_bluetooth.write(packet)

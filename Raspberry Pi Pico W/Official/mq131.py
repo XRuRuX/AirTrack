@@ -1,7 +1,7 @@
 import machine, time
 
 class MQ131:
-    def __init__(self, pin_number=26, adc_ref=3.3, sensor_supply=5.0, Rload=10000, R0 = 93987.9):
+    def __init__(self, pin_number=26, adc_ref=3.3, sensor_supply=5.0, Rload=10000, R0 = 202118.4):
         self.adc = machine.ADC(pin_number)
         self.adc_ref = adc_ref
         self.sensor_supply = sensor_supply
@@ -133,7 +133,7 @@ class MQ131:
 # Using example
 if __name__ == '__main__':
     sensor = MQ131()
-    #sensor.calibrate_sensor(cal_time=5, ambient_ppb=16)
+    sensor.calibrate_sensor(cal_time=60, ambient_ppb=25)
 
     while True:
         o3 = sensor.get_data()
