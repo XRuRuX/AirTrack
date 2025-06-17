@@ -29,7 +29,7 @@ public class PacketValidator {
         }
 
         // Check the CRC-16 checksum
-        int expectedCRC16 = ((data[19] & 0xFF) << 8) | (data[20] & 0xFF);
+        int expectedCRC16 = ((data[20] & 0xFF) << 8) | (data[21] & 0xFF);
         int actualCRC16 = CRC16.calculateCRC(data, actualPacketLength - 2);
         if(expectedCRC16 != actualCRC16) {
             Log.e("PacketValidator", "Wrong packet CRC-16. Expected: " + expectedCRC16 + ". Actual: " + actualCRC16);

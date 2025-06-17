@@ -21,14 +21,14 @@ public class DataParser implements DataProcessor {
             int pm25 = ((data[4] & 0xFF) << 8) | (data[5] & 0xFF);  // Remove the sign
             int pm10 = ((data[6] & 0xFF) << 8) | (data[7] & 0xFF);  // Remove the sign
             // Extract ozone concentration (ppb) from the data packet according to documentation
-            float ozone = (data[8] & 0xFF) + (float)(data[9] & 0xFF) / 10;  // Remove the sign
+            float ozone = ((data[8] & 0xFF) << 8 | (data[9] & 0xFF)) + (float)(data[10] & 0xFF) / 100;    // Remove the sign
             // Extract CO concentration (ppm) from the data packet according to documentation
-            float co = ((data[10] & 0xFF) << 8 | (data[11] & 0xFF)) + (float)(data[12] & 0xFF) / 100;    // Remove the sign
+            float co = ((data[11] & 0xFF) << 8 | (data[12] & 0xFF)) + (float)(data[13] & 0xFF) / 100;    // Remove the sign
             // Extract NO2 concentration (ppm) from the data packet according to documentation
-            float no2 = (data[13] & 0xFF) + (float)(data[14] & 0xFF) / 100;  // Remove the sign
+            float no2 = (data[14] & 0xFF) + (float)(data[15] & 0xFF) / 100;  // Remove the sign
             // Extract temperature and humidity from the data packet according to documentation
-            float temperature = (data[15] & 0xFF) + (float)(data[16] & 0xFF) / 10;  // Remove the sign
-            float humidity = (data[17] & 0xFF) + (float)(data[18] & 0xFF) / 10;  // Remove the sign
+            float temperature = (data[16] & 0xFF) + (float)(data[17] & 0xFF) / 10;  // Remove the sign
+            float humidity = (data[18] & 0xFF) + (float)(data[19] & 0xFF) / 10;  // Remove the sign
             // Calculate AQI based on the pollutant values
             int pm25AQI = ConcentrationToAQI.pm25(pm25);
             int pm10AQI = ConcentrationToAQI.pm10(pm10);

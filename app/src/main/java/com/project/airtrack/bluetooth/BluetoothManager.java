@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * Handles interactions with Bluetooth APIs and communicates data to a Mediator.
  */
 public class BluetoothManager {
-    private static final int PACKET_LENGTH = 21;
+    private static final int PACKET_LENGTH = 22;
     private Mediator mediator;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothSocket socket;

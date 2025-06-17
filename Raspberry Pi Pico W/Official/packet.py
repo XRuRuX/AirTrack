@@ -21,7 +21,7 @@ class PacketBuilder:
         temp += pm10.to_bytes(2, 'big') # Add PM10 value (2 bytes, big-endian)
         ozone_int = int(ozone) # Only the integer part
         ozone_decimal = int((ozone - ozone_int) * 10) # Decimal part
-        temp += ozone_int.to_bytes(1, 'big')
+        temp += ozone_int.to_bytes(2, 'big')
         temp += ozone_decimal.to_bytes(1, 'big')
         co_int = int(co) # Only the integer part
         co_decimal = int((co - co_int) * 100) # Decimal part
