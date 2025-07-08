@@ -89,7 +89,7 @@ public class BluetoothManager {
     private void notifyError(String errorMessage) {
         Log.e("BluetoothManager", errorMessage);
 
-        byte[] errorByte = new byte[]{(byte) 0xFF}; // Temporary error code
+        byte[] errorByte = new byte[]{(byte) 0xFF}; // Error code
         mediator.handleData(errorByte);
     }
 

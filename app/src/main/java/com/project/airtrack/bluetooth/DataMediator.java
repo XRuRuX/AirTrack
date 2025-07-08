@@ -2,6 +2,7 @@ package com.project.airtrack.bluetooth;
 
 import com.project.airtrack.data.processing.DataProcessor;
 import com.project.airtrack.data.processing.EnvironmentalData;
+import com.project.airtrack.data.processing.PacketValidator;
 import com.project.airtrack.exceptions.DataParsingException;
 
 /**
@@ -25,15 +26,19 @@ public class DataMediator implements Mediator {
     @Override
     public void handleData(byte[] data) {
         try {
-            EnvironmentalData processedData = processor.process(data);
-            // Send data to all fragment listeners
-            homeDataReceivedListener.onDataReceived(processedData);
-            temperatureDataReceivedListener.onDataReceived(processedData);
-            airDataReceivedListener.onDataReceived(processedData);
+            if(PacketValidator.isValid(data)){
+                EnvironmentalData processedData = processor.process(data);
+                // Send data to all fragment listeners
+                homeDataReceivedListener.onDataReceived(processedData);
+                temperatureDataReceivedListener.onDataReceived(processedData);
+                airDataReceivedListener.onDataReceived(processedData);
+            }
+            else {
+                throw new DataParsingException("Invalid packet received!");
+            }
 
         } catch (DataParsingException e)
         {
-            // Future implementation on error management system
         }
 
     }

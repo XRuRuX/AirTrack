@@ -15,15 +15,7 @@ import java.util.List;
  */
 @Dao
 public interface SensorDataDAO {
-    // Retrieves all sensor data records from the database
-    @Query("SELECT * FROM sensors_data")
-    List<SensorsData> getAll();
-
-    // Retrieves all sensor data records by specific IDs
-    @Query("SELECT * FROM sensors_data WHERE id IN (:sensorsDataIds)")
-    List<SensorsData> loadAllByIds(int[] sensorsDataIds);
-
-    // Adaugă metoda care extrage toate înregistrările
+    // Extract all records
     @Query("SELECT * FROM sensors_data")
     List<SensorsData> getAllSensorData();
 
@@ -34,12 +26,4 @@ public interface SensorDataDAO {
     // Insert single sensor data record intro the database
     @Insert
     void insert(SensorsData data);
-
-    // Inserts multiple sensor data record into the database
-    @Insert
-    void insertAll(SensorsData... data);
-
-    // Delets a specific sensor data record from the database
-    @Delete
-    void delete(SensorsData data);
 }

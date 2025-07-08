@@ -7,7 +7,6 @@ import android.util.Log;
  */
 public class PacketValidator {
     public static boolean isValid(byte[] data) {
-        // Temporary for errors future implementation on error management system
         if(data[0] == (byte)0xFF)
         {
             return false;

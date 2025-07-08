@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private Fragment homeFragment;
     private Fragment temperatureFragment;
     private Fragment airFragment;
-    private Fragment settingsFragment;
     private Fragment activeFragment;
     private Mediator mediator;
     private DataProcessor processor;
@@ -50,13 +49,11 @@ public class MainActivity extends AppCompatActivity {
         homeFragment = new HomeFragment();
         temperatureFragment = new TemperatureFragment();
         airFragment = new AirFragment();
-        settingsFragment = new SettingsFragment();
 
         activeFragment = homeFragment;
 
         // Add fragments to the container and hide the ones that are not active
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fl_central_container, settingsFragment, "settings").hide(settingsFragment)
                 .add(R.id.fl_central_container, airFragment, "air").hide(airFragment)
                 .add(R.id.fl_central_container, temperatureFragment, "temperature").hide(temperatureFragment)
                 .add(R.id.fl_central_container, homeFragment, "home")
@@ -87,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 switchFragment(temperatureFragment);
             } else if (item.getItemId() == R.id.navigation_air) {
                 switchFragment(airFragment);
-            } else if (item.getItemId() == R.id.navigation_settings) {
-                switchFragment(settingsFragment);
             } else {
                 return false;
             }
